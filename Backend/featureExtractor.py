@@ -13,14 +13,20 @@ labels = sqlContext.read.format("csv").option("header", "true").load("credibilit
 
 # joins tweets with their credibility rating by joining on id. This is due to huge number of deleted tweets in data set.
 tweets = tweets.join(labels, tweets.id == labels.cred_id)
+print("Number of tweets: " + str(tweets.count()))
 
 # filter all non-English tweets
 tweets = tweets.filter(tweets.lang == "en")
+print("Number of english tweets: " + str(tweets.count()))
 
 # Convert verified/unverified into a boolean using index
 credIndexer = StringIndexer(inputCol="cred", outputCol="credIndex")
 credLabeller = credIndexer.fit(tweets)
 tweets = credLabeller.transform(tweets)
+
+'''
+Feature extraction
+'''
 
 # Adds column with number of characters in a tweet
 tweets = tweets.withColumn('characterCount', length(tweets.text))
@@ -44,6 +50,17 @@ tweets = tweets.fillna({'retweet_count': "0"})
 tweets = tweets.fillna({'user_friends_count': "0"})
 tweets = tweets.fillna({'user_followers_count': "0"})
 
+'''
+Features Used:
+    - retweet count
+    - user's friend count
+    - user's follower count
+    - tweet's character count
+    - tweet's word count
+    - tweet contains URL
+    - hashtag count
+    - tweet contains geolocation
+'''
 features = tweets.select(tweets.retweet_count.cast("float"),
                          tweets.user_friends_count.cast("float").alias('friends'),
                          tweets.user_followers_count.cast("float").alias('followers'),
@@ -54,14 +71,14 @@ features = tweets.select(tweets.retweet_count.cast("float"),
                          tweets.containsGeoLocation,
                          tweets.credIndex)
 
+# This will create a vector of all the features
 assembler = VectorAssembler(
     inputCols=["retweet_count", "characterCount", "wordCount", "containsUrl", "hashtagsCount", "containsGeoLocation"],
     outputCol="features")
 
 training = assembler.transform(features)
 
-training.show()
-
+# Splits our data set into training and test data
 (train_cv, test_cv) = training.randomSplit([0.7, 0.3])
 
 #This will create a logistic regression model of our data
@@ -73,6 +90,30 @@ lrModel = lr.fit(train_cv)
 
 #This will predict on our test using lr model
 predictions = lrModel.transform(test_cv)
+predictions.select('credIndex', 'prediction')
+
+#calculate the accuracy
+totalPred = predictions.count()
+totalCorrect = predictions.filter(predictions.credIndex == predictions.prediction).count()
+print("Accuracy of test data: " + str(float(totalCorrect)/float(totalPred)))
+
+predictionAndLabels = predictions.select('prediction', 'credIndex').rdd
+# Instantiate metrics object
+metrics = BinaryClassificationMetrics(predictionAndLabels)
+
+# Area under precision-recall curve
+print("Area under PR = %s" % metrics.areaUnderPR)
+
+# Area under ROC curve
+print("Area under ROC = %s" % metrics.areaUnderROC)
+
+from pyspark.ml.classification import LinearSVC
+
+lsvc = LinearSVC(featuresCol = 'features', labelCol = 'credIndex', maxIter=10, regParam=0.1)
+lsvcModel = lsvc.fit(train_cv)
+
+#This will predict on our test using lr model
+predictions = lsvcModel.transform(test_cv)
 predictions.select('credIndex', 'prediction')
 
 #calculate the accuracy
