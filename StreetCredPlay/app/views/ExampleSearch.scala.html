@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+@import play.mvc.Http.Context.Implicit._
+
+<html>
+  <head>
+    <title>Example Search Page</title>
+   		<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+   		<link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/all.min.css")">
+   		<link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/open-iconic-bootstrap.min.css")">      
+   		
+				
+		<link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+				
+		<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+		<script src="@routes.Assets.versioned("javascripts/jquery.easing.min.js")"></script>
+   		<script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
+   		<script src="@routes.Assets.versioned("javascripts/all.min.js")"></script>
+   		
+   		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    	
+	</head>
+
+  	<body id="myBody" wsdata="@routes.SearchController.socket.webSocketURL(request)" onload="initalize()">
+
+		<div class="container" >
+
+		<div class="row">
+  			<div class="col-md-12">
+  				<nav class="navbar navbar-default">
+  					<div class="container-fluid">
+    					<!-- Brand and toggle get grouped for better mobile display -->
+      					<h4 style="font-family: 'Varela Round'">Example Search</h4>
+    				</div>
+    			</nav>
+  			</div>
+  		</div>
+  		
+  		
+  		
+  		
+		
+		<div id="resultsDiv"></div>
+		
+		<div class="row">
+  			<div id="searchbar" class="col-md-12">
+  				<div class="input-group mb-3">
+  					<input id="searchText" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+  					<div class="input-group-append">
+    					<button type="button" class="btn btn-primary" onclick="searchButtonPressed()">Search!</button>
+  					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		
+  		
+  		</div>
+  		
+  		<script type="text/javascript">
+			function initalize() {
+		
+				openWebSocketConnection();
+				
+				
+			}
+			
+			var ws; // websocket to the backend
+			
+			
+		       
+			// ######################################################################################
+			// Top level control logic
+			// ######################################################################################
+			
+		    function openWebSocketConnection() {
+		    	   
+		    	   var wsURL = document.getElementById("myBody").getAttribute("wsdata");
+				   
+		           ws = new WebSocket(wsURL);
+		           ws.onmessage = function (event) {
+		               var message;
+		               message = JSON.parse(event.data);
+		               switch (message.messageType) {
+		                   case "init":
+		               		   break;
+		                   case "statusMessage":
+		                	   alert(message.status);
+		                	   break;
+		                   default:
+		                       return console.log(message);
+		               }
+		           };
+		           ws.onclose = function (event) {
+		        	   // do nothing
+		           }
+		    }
+			
+			
+			function searchButtonPressed() {
+				var searchText = document.getElementById("searchText").value;
+				ws.send(JSON.stringify({
+                    messageType: "doSearch",
+                    query: searchText
+                }));
+			}
+		    
+		    
+		    </script>
+		    
+		    
+
+       
+       
+       </body>
+
+</html>
