@@ -11,7 +11,7 @@ import scala.concurrent.{Future, Await}
 import scala.util.{Failure, Success}
 import scala.collection.mutable.ListBuffer
 
-class Crawler(val consumerToken: ConsumerToken, val accessToken: AccessToken) {
+class Crawler() {
   def searchTweets(query: String): Future[Seq[Tweet]]={
     val consumerToken = ConsumerToken(key = "T9H5bGk6mm6xFGsm0Plr3kMO7", secret = "z34jTfJzR3C30WuCSSjfG1MBKcsRv4h0a22dLHhLwsVgxEPBKN")
     val accessToken = AccessToken(key = "294518321-uByqtgwisRTvuYoUYoVcQjr965KrUFbwXbSI563B", secret = "kdqXnHuCeBJjvscsizntPej490YhDPF2lj6ORjVfBXhIq")
@@ -29,7 +29,7 @@ class Crawler(val consumerToken: ConsumerToken, val accessToken: AccessToken) {
     val tweets = searchTweets(query)
     tweets onComplete {
       case Success(statuses) => for (tweet <- tweets) for(t <- tweet){
-        test+=t.text
+        test+=t.id_str
       }
       case Failure(t) => println("An error has occurred: " + t.getMessage)
     }

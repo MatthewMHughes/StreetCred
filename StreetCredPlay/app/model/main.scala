@@ -40,7 +40,7 @@ object main {
 
     val consumerToken = ConsumerToken(key = "my-consumer-key", secret = "my-consumer-secret")
     val accessToken = AccessToken(key = "my-access-key", secret = "my-access-secret")
-    val crawler = new Crawler(consumerToken, accessToken)
+    val crawler = new Crawler()
     val tweets = crawler.search("Glasgow")
   }
 }

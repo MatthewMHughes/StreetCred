@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+@()(implicit r: Request[_])
 
+<!DOCTYPE html>
 @import play.mvc.Http.Context.Implicit._
 
 <html>
@@ -17,12 +18,12 @@
 		<script src="@routes.Assets.versioned("javascripts/jquery.easing.min.js")"></script>
    		<script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
    		<script src="@routes.Assets.versioned("javascripts/all.min.js")"></script>
-   		
-   		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	    <script src="@routes.Assets.versioned("javascripts/websocket.js")"></script>
+
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     	
 	</head>
-
-  	<body id="myBody" wsdata="@routes.SearchController.socket.webSocketURL(request)" onload="initalize()">
+  	<body id="myBody" data-ws="@routes.SearchController.socket.webSocketURL()">
 
 		<div class="container" >
 
@@ -31,7 +32,7 @@
   				<nav class="navbar navbar-default">
   					<div class="container-fluid">
     					<!-- Brand and toggle get grouped for better mobile display -->
-      					<h4 style="font-family: 'Varela Round'">Example Search</h4>
+      					<h4 style="font-family: 'Varela Round'">StreetCred</h4>
     				</div>
     			</nav>
   			</div>
@@ -48,72 +49,16 @@
   				<div class="input-group mb-3">
   					<input id="searchText" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
   					<div class="input-group-append">
-    					<button type="button" class="btn btn-primary" onclick="searchButtonPressed()">Search!</button>
+						<button type="button" class="btn btn-primary" id="searchButton">Search!</button>
   					</div>
 				</div>
 			</div>
 			
 		</div>
-		
-		
-  		
-  		</div>
-  		
-  		<script type="text/javascript">
-			function initalize() {
-		
-				openWebSocketConnection();
-				
-				
-			}
-			
-			var ws; // websocket to the backend
-			
-			
-		       
-			// ######################################################################################
-			// Top level control logic
-			// ######################################################################################
-			
-		    function openWebSocketConnection() {
-		    	   
-		    	   var wsURL = document.getElementById("myBody").getAttribute("wsdata");
-				   
-		           ws = new WebSocket(wsURL);
-		           ws.onmessage = function (event) {
-		               var message;
-		               message = JSON.parse(event.data);
-		               switch (message.messageType) {
-		                   case "init":
-		               		   break;
-		                   case "statusMessage":
-		                	   alert(message.status);
-		                	   break;
-		                   default:
-		                       return console.log(message);
-		               }
-		           };
-		           ws.onclose = function (event) {
-		        	   // do nothing
-		           }
-		    }
-			
-			
-			function searchButtonPressed() {
-				var searchText = document.getElementById("searchText").value;
-				ws.send(JSON.stringify({
-                    messageType: "doSearch",
-                    query: searchText
-                }));
-			}
-		    
-		    
-		    </script>
-		    
-		    
 
-       
-       
+			<div class="row" id="tweets">
+			</div>
+  		</div>
        </body>
 
 </html>
