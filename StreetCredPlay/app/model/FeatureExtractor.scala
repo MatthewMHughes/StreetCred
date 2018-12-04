@@ -55,7 +55,7 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
 
   //returns 1.0 if the tweet has geotagged coordinates, 0.0 otherwise
   def hasGEO(inputDf: DataFrame): DataFrame ={
-    inputDf.withColumn("has_geo", $"geo.coordinates".isNotNull.cast("float"))
+    inputDf.withColumn("has_geo", $"geo".isNotNull.cast("float"))
   }
 
   //returns 1.0 if the user is verified, 0.0 otherwise

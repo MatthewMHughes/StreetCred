@@ -56,6 +56,9 @@ function openWebSocketConnection() {
                 console.log(message.status);
                 document.getElementById('tweets').innerHTML = "";
                 document.getElementById('tweet').innerHTML+=message.status;
+            case "displayCred":
+                document.getElementById('tweets').innerHTML+=message.status;
+                console.log(message);
             default:
                 return console.log(message);
         }

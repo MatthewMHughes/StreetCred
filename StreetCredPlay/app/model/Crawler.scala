@@ -1,39 +1,46 @@
 package model
 
-import org.apache.spark.streaming.{Seconds, StreamingContext}
-import com.danielasfregola.twitter4s.TwitterRestClient
-import com.danielasfregola.twitter4s.entities.{AccessToken, ConsumerToken, Tweet}
-import org.apache.spark.SparkContext
+
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.functions.typedLit
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Future, Await}
-import scala.util.{Failure, Success}
 import scala.collection.mutable.ListBuffer
+import twitter4j.auth.AccessToken
+import twitter4j.conf.ConfigurationBuilder
+import twitter4j.{Query, QueryResult, TwitterFactory, TwitterObjectFactory}
 
-class Crawler() {
-  def searchTweets(query: String): Future[Seq[Tweet]]={
-    val consumerToken = ConsumerToken(key = "T9H5bGk6mm6xFGsm0Plr3kMO7", secret = "z34jTfJzR3C30WuCSSjfG1MBKcsRv4h0a22dLHhLwsVgxEPBKN")
-    val accessToken = AccessToken(key = "294518321-uByqtgwisRTvuYoUYoVcQjr965KrUFbwXbSI563B", secret = "kdqXnHuCeBJjvscsizntPej490YhDPF2lj6ORjVfBXhIq")
-    val restClient = TwitterRestClient(consumerToken, accessToken)
-    restClient.searchTweet(query=query, count=15).flatMap{ratedData =>
-    val result = ratedData.data
-    val tweets = result.statuses
-      Future(tweets.sortBy(_.created_at))
-    }
+import collection.JavaConversions._
+
+class Crawler(ss: SparkSession) {
+  var df: DataFrame = _
+  import ss.implicits._
+  def searchTweets(query: String): QueryResult={
+    val cb = new ConfigurationBuilder()
+    cb.setJSONStoreEnabled(true)
+    val twitter = new TwitterFactory(cb.build()).getInstance()
+    // Authorising with your Twitter Application credentials
+    twitter.setOAuthConsumer("T9H5bGk6mm6xFGsm0Plr3kMO7",
+      "z34jTfJzR3C30WuCSSjfG1MBKcsRv4h0a22dLHhLwsVgxEPBKN")
+    twitter.setOAuthAccessToken(new AccessToken(
+      "294518321-uByqtgwisRTvuYoUYoVcQjr965KrUFbwXbSI563B",
+      "kdqXnHuCeBJjvscsizntPej490YhDPF2lj6ORjVfBXhIq"))
+    val theQuery = new Query(query)
+    theQuery.setCount(20)
+    twitter.search(theQuery)
   }
 
   def search(query: String): List[String]= {
-    def sleep(time: Long): Unit = Thread.sleep(time)
-    var test = new ListBuffer[String]()
-    val tweets = searchTweets(query)
-    tweets onComplete {
-      case Success(statuses) => for (tweet <- tweets) for(t <- tweet){
-        test+=t.id_str
-      }
-      case Failure(t) => println("An error has occurred: " + t.getMessage)
+    var idList = new ListBuffer[String]()
+    var tweetList = new ListBuffer[String]()
+    val tweets = searchTweets(query).getTweets
+    for(tweet <- tweets){
+      idList+= String.valueOf(tweet.getId)
+      val json = TwitterObjectFactory.getRawJSON(tweet)
+      tweetList+=json
     }
-    sleep(3000)
-    test.toList
+    df = ss.read.json(tweetList.toList.toDS)
+    df = df.withColumn("label", typedLit("verified"))
+    idList.toList
   }
 }

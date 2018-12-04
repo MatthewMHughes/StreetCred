@@ -1,26 +1,31 @@
 package actors
 
+import actors.ModelActor.displayCred
+import actors.SearchActor.getCreds
 import akka.actor._
 import akka.stream.Materializer
 import com.fasterxml.jackson.databind.node.ObjectNode
 import play.libs.Json
 import akka.japi.pf.ReceiveBuilder
+import com.danielasfregola.twitter4s.entities.Tweet
 import com.fasterxml.jackson.databind.JsonNode
-import model.Crawler
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import model.{Crawler, Spark}
+import org.apache.spark.sql.DataFrame
+import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue}
 
 object SearchActor {
-  def props(out: ActorRef, system: ActorSystem, mat: Materializer):Props = {
+  def props(out: ActorRef, system: ActorSystem, mat: Materializer, model: ActorRef, spark: Spark):Props = {
     val msg: JsValue = JsObject(Seq(
       "messageType" -> JsString("init")
     ))
     out ! msg
-    val crawler = new Crawler()
-    Props(new SearchActor(out, system, mat, crawler))}
+    val crawler = new Crawler(spark.ss)
+    Props(new SearchActor(out, system, mat, crawler, model, spark))}
+  case class getCreds(cred: DataFrame) //message class
 
 }
 
-class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler) extends Actor {
+class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler, model: ActorRef, spark: Spark) extends Actor {
   def receive:PartialFunction[Any, Unit] = {
     case msg: JsValue =>
       val tweets = crawler.search(msg("query").toString)
@@ -31,5 +36,12 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         ))
         out ! message
       }
+      model ! getCreds(crawler.df)
+    case displayCred(cred) =>
+      val message: JsValue = JsObject(Seq(
+        "messageType" -> JsString("displayCred"),
+        "status" -> JsNumber(cred)
+      ))
+      out ! message
   }
 }

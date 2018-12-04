@@ -66,7 +66,16 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, var m
   /* This will create the classification model */
   def trainModel(): PipelineModel = {
     model = pipeline().fit(df)
-    model.write.overwrite().save("/tmp/spark-logistic-regression-model")
+    model.write.overwrite().save("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
     model
+  }
+
+  def getModel(): PipelineModel = {
+    PipelineModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
+  }
+
+  def getPredictions(predDf: DataFrame): Array[Double] = {
+    val pred = model.transform(predDf)
+    pred.select("prediction").rdd.map(r => r(0).asInstanceOf[Double]).collect()
   }
 }
