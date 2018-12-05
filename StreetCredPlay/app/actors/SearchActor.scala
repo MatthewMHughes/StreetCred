@@ -28,18 +28,28 @@ object SearchActor {
 class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler, model: ActorRef, spark: Spark) extends Actor {
   def receive:PartialFunction[Any, Unit] = {
     case msg: JsValue =>
-      val tweets = crawler.search(msg("query").toString)
-      var id = 0
-      for(tweet <- tweets){
-        val message: JsValue = JsObject(Seq(
-          "messageType" -> JsString("displayTweet"),
-          "status" -> JsString(tweet),
-          "id" -> JsNumber(id)
-        ))
-        id+=1
-        out ! message
+      val socketMessage = msg("messageType")
+      println(msg("messageType"))
+      if(socketMessage == JsString("doSearch")){
+        val tweets = crawler.search(msg("query").toString)
+        var id = 0
+        for(tweet <- tweets){
+          val message: JsValue = JsObject(Seq(
+            "messageType" -> JsString("displayTweet"),
+            "status" -> JsString(tweet),
+            "id" -> JsNumber(id)
+          ))
+          id+=1
+          out ! message
+        }
+        model ! getCreds(crawler.df, tweets)
       }
-      model ! getCreds(crawler.df, tweets)
+      else if(socketMessage == JsString("updateCred")){
+        val tweets = crawler.tweets
+        val updateTweet = tweets.get(msg("id").toString.asInstanceOf[Int])
+        val cred = msg("cred").toString.asInstanceOf[Double]
+        crawler.updateCred(updateTweet, cred)
+      }
     case displayCred(cred, tweets) =>
       var id = 0
       for(pred <- cred){

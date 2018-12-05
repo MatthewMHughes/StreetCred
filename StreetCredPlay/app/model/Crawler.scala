@@ -1,6 +1,8 @@
 package model
 
 
+import com.mongodb.spark.MongoSpark
+import com.mongodb.spark.config.{ReadConfig, WriteConfig}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.typedLit
@@ -8,12 +10,13 @@ import org.apache.spark.sql.functions.typedLit
 import scala.collection.mutable.ListBuffer
 import twitter4j.auth.AccessToken
 import twitter4j.conf.ConfigurationBuilder
-import twitter4j.{Query, QueryResult, TwitterFactory, TwitterObjectFactory}
+import twitter4j._
 
 import collection.JavaConversions._
 
 class Crawler(ss: SparkSession) {
   var df: DataFrame = _
+  var tweets: java.util.List[Status] = _
   import ss.implicits._
   def searchTweets(query: String): QueryResult={
     val cb = new ConfigurationBuilder()
@@ -34,7 +37,7 @@ class Crawler(ss: SparkSession) {
   def search(query: String): List[String]= {
     var idList = new ListBuffer[String]()
     var tweetList = new ListBuffer[String]()
-    val tweets = searchTweets(query).getTweets
+    tweets = searchTweets(query).getTweets
     for(tweet <- tweets){
       idList+= String.valueOf(tweet.getId)
       val json = TwitterObjectFactory.getRawJSON(tweet)
@@ -43,5 +46,18 @@ class Crawler(ss: SparkSession) {
     df = ss.read.json(tweetList.toList.toDS)
     df = df.withColumn("label", typedLit("verified"))
     idList.toList
+  }
+
+  def updateCred(tweet: Status, cred: Double): Unit ={
+    val json = TwitterObjectFactory.getRawJSON(tweet)
+    var tweetDf = ss.read.json(json)
+    if(cred == 0.0){
+      tweetDf = tweetDf.withColumn("label", typedLit("verified"))
+    }
+    else{
+      tweetDf = tweetDf.withColumn("label", typedLit("unverified"))
+    }
+    val writeConfig = WriteConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Test"))
+    MongoSpark.save(tweetDf, writeConfig)
   }
 }

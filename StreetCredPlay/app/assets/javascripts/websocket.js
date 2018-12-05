@@ -73,6 +73,14 @@ function openWebSocketConnection() {
                 div.innerHTML = "";
                 text = document.createTextNode(message.status);
                 div.appendChild(text);
+                var button = document.createElement("button");
+                button.setAttribute("type", "button");
+                var buttonId = "id-"+String(message.id)+"-button";
+                button.setAttribute("id", buttonId);
+                var buttonText = document.createTextNode("Don't Agree?");
+                button.appendChild(buttonText);
+                div.appendChild(button);
+                button.addEventListener('click', updateCredButtonPressed(message.id, message.status));
             default:
                 return console.log(message);
         }
@@ -84,7 +92,6 @@ function openWebSocketConnection() {
 
 
 function searchButtonPressed() {
-    console.log("pressed");
     var tweets = document.getElementById("tweets");
     tweets.innerHTML = "";
     var load = document.createElement("h1");
@@ -97,5 +104,13 @@ function searchButtonPressed() {
     ws.send(JSON.stringify({
         messageType: "doSearch",
         query: searchText
+    }));
+}
+
+function updateCredButtonPressed(id, cred){
+    ws.send(JSON.stringify({
+        messageType: "updateCred",
+        id: id,
+        cred: cred
     }));
 }
