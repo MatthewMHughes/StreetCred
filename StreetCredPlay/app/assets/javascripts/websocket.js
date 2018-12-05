@@ -46,11 +46,16 @@ function openWebSocketConnection() {
                 alert(message.status);
                 break;
             case "displayTweet":
+                var load = document.getElementById("loadingMsg");
+                if (load != null){load.innerHTML = "";}
                 var widgetid = "id-"+String(message.id);
                 var div = document.getElementById("tweets");
                 var text = document.createElement("div");
+                var loadCred = document.createTextNode("Loading Credibility ...");
                 text.setAttribute("id", widgetid);
                 text.setAttribute("class", "row");
+                var headCred = document.createElement("h1");
+                headCred.setAttribute("id", "id-"+String(message.id)+"-cred");
                 div.appendChild(text);
                 twttr.widgets.createTweet(
                     message.status,
@@ -59,15 +64,15 @@ function openWebSocketConnection() {
                         theme: 'dark'
                     }
                 );
+                headCred.appendChild(loadCred);
+                text.appendChild(headCred);
                 document.getElementById('tweet').innerHTML+=message.status;
             case "displayCred":
-                var id = "id-"+String(message.id);
-                var msg = "<h1>"+message.status+"</h1>";
+                var id = "id-"+String(message.id)+"-cred";
                 div = document.getElementById(id);
-                var head = document.createElement("h1");
+                div.innerHTML = "";
                 text = document.createTextNode(message.status);
-                head.appendChild(text);
-                div.appendChild(head);
+                div.appendChild(text);
             default:
                 return console.log(message);
         }
@@ -80,6 +85,13 @@ function openWebSocketConnection() {
 
 function searchButtonPressed() {
     console.log("pressed");
+    var tweets = document.getElementById("tweets");
+    tweets.innerHTML = "";
+    var load = document.createElement("h1");
+    var loadingMessage = document.createTextNode("Loading Tweets ...");
+    load.appendChild(loadingMessage);
+    load.setAttribute("id", "loadingMsg");
+    tweets.appendChild(load);
     var searchText = document.getElementById("searchText").value;
     console.log(searchText);
     ws.send(JSON.stringify({
