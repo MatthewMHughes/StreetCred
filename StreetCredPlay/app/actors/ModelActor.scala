@@ -15,21 +15,18 @@ import play.api.libs.json.JsValue
 
 object ModelActor {
   def props(spark: Spark): Props = Props(new ModelActor(spark))
-  case class displayCred(cred: Double)
+  case class displayCred(cred: Array[Double], tweets: List[String])
 }
 
 class ModelActor(spark: Spark) extends Actor{
 
   def receive: PartialFunction[Any, Unit] ={
-    case getCreds(cred) =>
+    case getCreds(cred, tweets) =>
       val extractor = new FeatureExtractor(spark.sc, spark.ss, cred)
       val features = extractor.extractFeatures()
       val pipeline = PipelineModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
       val model = new Model(spark.sc, spark.ss, features, pipeline)
       val predictions = model.getPredictions(features)
-      for(pred <- predictions){
-        println(pred)
-        sender() ! displayCred(pred)
-      }
+      sender() ! displayCred(predictions, tweets)
   }
 }

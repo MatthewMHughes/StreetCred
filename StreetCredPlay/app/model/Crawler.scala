@@ -27,6 +27,7 @@ class Crawler(ss: SparkSession) {
       "kdqXnHuCeBJjvscsizntPej490YhDPF2lj6ORjVfBXhIq"))
     val theQuery = new Query(query)
     theQuery.setCount(20)
+    theQuery.setLang("en")
     twitter.search(theQuery)
   }
 

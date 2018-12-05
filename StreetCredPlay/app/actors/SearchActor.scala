@@ -21,7 +21,7 @@ object SearchActor {
     out ! msg
     val crawler = new Crawler(spark.ss)
     Props(new SearchActor(out, system, mat, crawler, model, spark))}
-  case class getCreds(cred: DataFrame) //message class
+  case class getCreds(cred: DataFrame, tweets: List[String]) //message class
 
 }
 
@@ -29,19 +29,27 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
   def receive:PartialFunction[Any, Unit] = {
     case msg: JsValue =>
       val tweets = crawler.search(msg("query").toString)
+      var id = 0
       for(tweet <- tweets){
         val message: JsValue = JsObject(Seq(
           "messageType" -> JsString("displayTweet"),
-          "status" -> JsString(tweet)
+          "status" -> JsString(tweet),
+          "id" -> JsNumber(id)
         ))
+        id+=1
         out ! message
       }
-      model ! getCreds(crawler.df)
-    case displayCred(cred) =>
-      val message: JsValue = JsObject(Seq(
-        "messageType" -> JsString("displayCred"),
-        "status" -> JsNumber(cred)
-      ))
-      out ! message
+      model ! getCreds(crawler.df, tweets)
+    case displayCred(cred, tweets) =>
+      var id = 0
+      for(pred <- cred){
+        val message: JsValue = JsObject(Seq(
+          "messageType" -> JsString("displayCred"),
+          "status" -> JsNumber(pred),
+          "id" -> JsNumber(id)
+        ))
+        id+=1
+        out ! message
+      }
   }
 }

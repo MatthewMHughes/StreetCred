@@ -46,19 +46,28 @@ function openWebSocketConnection() {
                 alert(message.status);
                 break;
             case "displayTweet":
+                var widgetid = "id-"+String(message.id);
+                var div = document.getElementById("tweets");
+                var text = document.createElement("div");
+                text.setAttribute("id", widgetid);
+                text.setAttribute("class", "row");
+                div.appendChild(text);
                 twttr.widgets.createTweet(
                     message.status,
-                    document.getElementById('tweets'),
+                    document.getElementById(widgetid),
                     {
                         theme: 'dark'
                     }
                 );
-                console.log(message.status);
-                document.getElementById('tweets').innerHTML = "";
                 document.getElementById('tweet').innerHTML+=message.status;
             case "displayCred":
-                document.getElementById('tweets').innerHTML+=message.status;
-                console.log(message);
+                var id = "id-"+String(message.id);
+                var msg = "<h1>"+message.status+"</h1>";
+                div = document.getElementById(id);
+                var head = document.createElement("h1");
+                text = document.createTextNode(message.status);
+                head.appendChild(text);
+                div.appendChild(head);
             default:
                 return console.log(message);
         }

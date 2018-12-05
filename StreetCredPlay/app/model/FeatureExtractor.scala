@@ -75,7 +75,13 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
 
   //returns 1.0 if the tweet has any media - an image, video etc, 0.0 otherwise
   def tweetContainsMedia(inputDf: DataFrame): DataFrame ={
-    inputDf.withColumn("contains_media", (size($"entities.media")!==0).cast("float"))
+    val columns = inputDf.columns
+    if(columns.contains("entities.media")){
+      inputDf.withColumn("contains_media", (size($"entities.media")!==0).cast("float"))
+    }
+    else{
+      inputDf.withColumn("contains_media", typedLit(0.0))
+    }
   }
 
   //returns the length of the user's description
