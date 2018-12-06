@@ -76,11 +76,14 @@ function openWebSocketConnection() {
                 var button = document.createElement("button");
                 button.setAttribute("type", "button");
                 var buttonId = "id-"+String(message.id)+"-button";
+                button.setAttribute("class", "btn btn-primary");
                 button.setAttribute("id", buttonId);
                 var buttonText = document.createTextNode("Don't Agree?");
                 button.appendChild(buttonText);
                 div.appendChild(button);
-                button.addEventListener('click', updateCredButtonPressed(message.id, message.status));
+                button.addEventListener("click", function(){
+                    updateCredButtonPressed(message.id, message.status);
+                }, false);
             default:
                 return console.log(message);
         }
@@ -108,9 +111,16 @@ function searchButtonPressed() {
 }
 
 function updateCredButtonPressed(id, cred){
-    ws.send(JSON.stringify({
-        messageType: "updateCred",
-        id: id,
-        cred: cred
-    }));
+    if (confirm("Please confirm the credibility is incorrect!")) {
+        txt = "You pressed OK!";
+        console.log(id);
+        console.log(cred);
+        ws.send(JSON.stringify({
+            messageType: "updateCred",
+            id: id,
+            cred: cred
+        }));
+    } else {
+        txt = "You pressed Cancel!";
+    }
 }

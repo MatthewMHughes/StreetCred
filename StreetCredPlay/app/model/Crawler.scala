@@ -16,7 +16,7 @@ import collection.JavaConversions._
 
 class Crawler(ss: SparkSession) {
   var df: DataFrame = _
-  var tweets: java.util.List[Status] = _
+  var tweetsJson: java.util.List[String] = _
   import ss.implicits._
   def searchTweets(query: String): QueryResult={
     val cb = new ConfigurationBuilder()
@@ -37,20 +37,21 @@ class Crawler(ss: SparkSession) {
   def search(query: String): List[String]= {
     var idList = new ListBuffer[String]()
     var tweetList = new ListBuffer[String]()
-    tweets = searchTweets(query).getTweets
+    val tweets = searchTweets(query).getTweets
     for(tweet <- tweets){
       idList+= String.valueOf(tweet.getId)
       val json = TwitterObjectFactory.getRawJSON(tweet)
       tweetList+=json
     }
+    tweetsJson = tweetList.toList
     df = ss.read.json(tweetList.toList.toDS)
     df = df.withColumn("label", typedLit("verified"))
     idList.toList
   }
 
-  def updateCred(tweet: Status, cred: Double): Unit ={
-    val json = TwitterObjectFactory.getRawJSON(tweet)
-    var tweetDf = ss.read.json(json)
+  def updateCred(tid: Int, cred: Double): Unit ={
+    val json = tweetsJson.get(tid)
+    var tweetDf = ss.read.json(Seq(json).toDS)
     if(cred == 0.0){
       tweetDf = tweetDf.withColumn("label", typedLit("verified"))
     }
