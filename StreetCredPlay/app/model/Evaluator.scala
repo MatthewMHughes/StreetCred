@@ -1,6 +1,7 @@
 package model
 
 import org.apache.spark.SparkContext
+import org.apache.spark.ml.classification.{DecisionTreeClassificationModel, DecisionTreeClassifier}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -45,6 +46,10 @@ class Evaluator(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, v
 
     val binEval = new BinaryClassificationEvaluator()
       .setLabelCol("labelIndex")
-    print(binEval.evaluate(predictions))
+    println(binEval.evaluate(predictions))
+    val treeModel = model.stages(6).asInstanceOf[DecisionTreeClassificationModel]
+    print(treeModel.featureImportances)
+    print(treeModel.toDebugString)
+    print(predictions.show)
   }
 }

@@ -1,7 +1,7 @@
 package actors
 
 import actors.ModelActor.displayCred
-import actors.SearchActor.getCreds
+import actors.SearchActor.{getCreds, retrainModel}
 import akka.actor._
 import akka.stream.Materializer
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -24,6 +24,7 @@ object SearchActor {
     val crawler = new Crawler(spark.ss)
     Props(new SearchActor(out, system, mat, crawler, model, spark))}
   case class getCreds(cred: DataFrame, tweets: List[String]) //message class
+  case class retrainModel()//message class
 
 }
 
@@ -57,6 +58,9 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         val cred = msg("cred").toString.toDouble
         // Store the tweet in the database's training data
         crawler.updateCred(tid, cred)
+      }
+      else if(socketMessage == JsString("retrainModel")){
+        model ! retrainModel()
       }
       // If the message is a displayCred class
     case displayCred(cred, tweets) =>

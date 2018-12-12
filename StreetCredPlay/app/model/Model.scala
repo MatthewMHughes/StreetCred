@@ -1,13 +1,13 @@
 package model
 
 import org.apache.spark.SparkContext
-import org.apache.spark.ml.classification.{LinearSVC, LogisticRegression, NaiveBayes}
+import org.apache.spark.ml.classification.{DecisionTreeClassifier, LinearSVC, LogisticRegression, NaiveBayes}
 import org.apache.spark.ml.feature.{IDF, _}
 import org.apache.spark.ml.{Pipeline, PipelineModel}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
-class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, var model: PipelineModel) {
-
+class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame) {
+  var model: PipelineModel = _
   /*This is a pipeline that takes in a dataframe of the features,
   calculate tf-idf of the tweets and then vectorizes the features with tfidf
   Then trains a classification model on the features*/
@@ -39,6 +39,7 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, var m
       .setInputCol("label")
       .setOutputCol("labelIndex")
 
+    //creates vector of features
     val vectorAssembler = new VectorAssembler()
       .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "has_geo", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
       .setOutputCol("features")
@@ -56,24 +57,30 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, var m
     val nb = new NaiveBayes()
       .setLabelCol("labelIndex")
 
+    val dc = new DecisionTreeClassifier()
+      .setLabelCol("labelIndex")
+
     //creates a pipeline of the model
     val pipeline = new Pipeline()
-      .setStages(Array(tokenizer, remover, tf, idf, labelIndexer, vectorAssembler, lsvc))
+      .setStages(Array(tokenizer, remover, tf, idf, labelIndexer, vectorAssembler, dc))
 
     pipeline
   }
 
-  /* This will create the classification model */
+  /* This will create the classification model and save it over the existing model */
   def trainModel(): PipelineModel = {
     model = pipeline().fit(df)
     model.write.overwrite().save("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
     model
   }
 
-  def getModel(): PipelineModel = {
-    PipelineModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
+  /* This will set the model to the saved model */
+  def setModel(): PipelineModel = {
+    model = PipelineModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
+    model
   }
 
+  /* This will get the prediction labels for given tweets and return an array of the labels */
   def getPredictions(predDf: DataFrame): Array[Double] = {
     val pred = model.transform(predDf)
     pred.select("prediction").rdd.map(r => r(0).asInstanceOf[Double]).collect()

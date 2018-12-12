@@ -18,8 +18,15 @@ window.twttr = (function(d, s, id) {
 document.addEventListener('DOMContentLoaded', function () {
     var ws;
     initialize();
+    document.getElementById('searchText').addEventListener('keyup', function (e){
+        if(e.keyCode === 13){
+            searchButtonPressed();
+        }
+    });
     document.getElementById('searchButton')
         .addEventListener('click', searchButtonPressed);
+    document.getElementById('retrainModel')
+        .addEventListener('click', retrainButtonPressed);
 });
 function initialize() {
     openWebSocketConnection();
@@ -46,16 +53,11 @@ function openWebSocketConnection() {
                 alert(message.status);
                 break;
             case "displayTweet":
-                var load = document.getElementById("loadingMsg");
-                if (load != null){load.innerHTML = "";}
                 var widgetid = "id-"+String(message.id);
                 var div = document.getElementById("tweets");
                 var text = document.createElement("div");
-                var loadCred = document.createTextNode("Loading Credibility ...");
                 text.setAttribute("id", widgetid);
                 text.setAttribute("class", "row");
-                var headCred = document.createElement("h1");
-                headCred.setAttribute("id", "id-"+String(message.id)+"-cred");
                 div.appendChild(text);
                 twttr.widgets.createTweet(
                     message.status,
@@ -63,15 +65,28 @@ function openWebSocketConnection() {
                     {
                         theme: 'dark'
                     }
-                );
-                headCred.appendChild(loadCred);
-                text.appendChild(headCred);
-                document.getElementById('tweet').innerHTML+=message.status;
+                ).then(function (){
+                    var load = document.getElementById("loadingMsg");
+                    if (load != null){load.innerHTML = "";}
+                    var loadCred = document.createTextNode("Loading Credibility ...");
+                    var headCred = document.createElement("h1");
+                    headCred.setAttribute("id", "id-"+String(message.id)+"-cred");
+                    headCred.appendChild(loadCred);
+                    text.appendChild(headCred);
+                    document.getElementById('tweet').innerHTML+=message.status;
+                });
             case "displayCred":
                 var id = "id-"+String(message.id)+"-cred";
                 div = document.getElementById(id);
                 div.innerHTML = "";
-                text = document.createTextNode(message.status);
+                var status;
+                if(message.status === 0){
+                    status = "uncredible ";
+                }
+                else{
+                    status = "credible   ";
+                }
+                text = document.createTextNode(status);
                 div.appendChild(text);
                 var button = document.createElement("button");
                 button.setAttribute("type", "button");
@@ -123,4 +138,11 @@ function updateCredButtonPressed(id, cred){
     } else {
         txt = "You pressed Cancel!";
     }
+}
+
+
+function retrainButtonPressed(){
+    ws.send(JSON.stringify({
+        messageType: "retrainModel"
+    }))
 }

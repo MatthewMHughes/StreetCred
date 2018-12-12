@@ -6,18 +6,20 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.util.ArrayData
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 class Spark {
   val conf = new SparkConf()
   conf.setMaster("local")
   conf.setAppName("StreetCred")
-  val sc = new SparkContext(conf)
+  val sc = SparkContext.getOrCreate(conf)
   val ss: SparkSession = SparkSession.builder()
     .master("local")
     .appName("StreetCred")
     .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/StreetCred.Train")
     .config("spark.mongodb.output.uri", "mongodb://127.0.0.1/StreetCred.Train")
     .getOrCreate()
+  val ssc = new StreamingContext(sc, Seconds(1))
   val consumerToken = ConsumerToken(key = "T9H5bGk6mm6xFGsm0Plr3kMO7", secret = "z34jTfJzR3C30WuCSSjfG1MBKcsRv4h0a22dLHhLwsVgxEPBKN")
   val accessToken = AccessToken(key = "294518321-uByqtgwisRTvuYoUYoVcQjr965KrUFbwXbSI563B", secret = "kdqXnHuCeBJjvscsizntPej490YhDPF2lj6ORjVfBXhIq")
 }
