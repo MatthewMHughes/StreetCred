@@ -47,6 +47,5 @@ class ModelActor(spark: Spark) extends Actor{
       val tree = newModel.model.stages(6).asInstanceOf[DecisionTreeClassificationModel]
       print(tree.featureImportances)
       print(tree.toDebugString)
-      print(tree.featuresCol.toString())
   }
 }
