@@ -125,6 +125,21 @@ function searchButtonPressed() {
     }));
 }
 
+function keepCredButtonPressed(id, cred){
+    if (confirm("Please confirm the credibility is correct!")) {
+        txt = "You pressed OK!";
+        console.log(id);
+        console.log(cred);
+        ws.send(JSON.stringify({
+            messageType: "keepCred",
+            id: id,
+            cred: cred
+        }));
+    } else {
+        txt = "You pressed Cancel!";
+    }
+}
+
 function updateCredButtonPressed(id, cred){
     if (confirm("Please confirm the credibility is incorrect!")) {
         txt = "You pressed OK!";

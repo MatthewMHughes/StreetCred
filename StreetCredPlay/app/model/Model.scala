@@ -85,4 +85,9 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame) {
     val pred = model.transform(predDf)
     pred.select("prediction").rdd.map(r => r(0).asInstanceOf[Double]).collect()
   }
+
+  def getExplaination(predDf: DataFrame): Array[Double] = {
+    val pred = model.transform(predDf)
+    pred.select("user_has_url").rdd.map(r => r(0).asInstanceOf[Double]).collect()
+  }
 }
