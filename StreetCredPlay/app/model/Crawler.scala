@@ -56,17 +56,29 @@ class Crawler(ss: SparkSession) {
     idList.toList
   }
 
-  def updateCred(tid: Int, cred: Double): Unit ={
+  def updateCred(tid: Int, cred: Double, change: Boolean): Unit ={
     // Get twitter raw json for the tweet whose credibility is being updated
     val json = tweetsJson.get(tid)
     // Convert to dataframe
     var tweetDf = ss.read.json(Seq(json).toDS)
-    // If credibility given was 0.0 ie unverified, set it's label to verified else do the opposite
-    if(cred == 0.0){
-      tweetDf = tweetDf.withColumn("label", typedLit("verified"))
+    // If the credibility is different to given label, reverse labels
+    if(change) {
+      // if original cred is 1.0 (verified), then set it to be unverified and vice versa
+      if (cred == 1.0) {
+        tweetDf = tweetDf.withColumn("label", typedLit("unverified"))
+      }
+      else {
+        tweetDf = tweetDf.withColumn("label", typedLit("verified"))
+      }
     }
+      // Else, the credibility label given was correct and we store it
     else{
-      tweetDf = tweetDf.withColumn("label", typedLit("unverified"))
+      if(cred == 1.0){
+        tweetDf = tweetDf.withColumn("label", typedLit("verified"))
+      }
+      else{
+        tweetDf = tweetDf.withColumn("label", typedLit("unverified"))
+      }
     }
     // Write tweet to training data
     val writeConfig = WriteConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Train"))

@@ -33,7 +33,7 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
     // If its a message from the frontend websocket we receive a JSValue
     case msg: JsValue =>
       val socketMessage = msg("messageType")
-      // If the message is "doSearch"
+      // If the message is "doSearch" - search for tweets
       if(socketMessage == JsString("doSearch")){
         // Query twitter crawler to get tweets for query given by user
         val tweets = crawler.search(msg("query").toString)
@@ -52,21 +52,30 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         // Send getCreds message to model actor to get credibility of the tweets
         model ! getCreds(crawler.df, tweets)
       }
-        // If the message is "updateCred"
+        // If the message is "updateCred" from frontend websocket - user disagrees with credibility
       else if(socketMessage == JsString("updateCred")){
         val tid = msg("id").toString.toInt
         val cred = msg("cred").toString.toDouble
         // Store the tweet in the database's training data
-        crawler.updateCred(tid, cred)
+        // change is true so the ModelActor knows to change the credibility label
+        crawler.updateCred(tid, cred, change=true)
+      }
+        // If the message is "keepCred" from frontend websocket - user agrees with credibility
+      else if(socketMessage == JsString("keepCred")){
+        val tid = msg("id").toString.toInt
+        val cred = msg("cred").toString.toDouble
+        // Store the tweet in the database's training data
+        // change is false so the ModelActor knows to keep the credibility label the same
+        crawler.updateCred(tid, cred, change=false)
       }
       else if(socketMessage == JsString("retrainModel")){
         model ! retrainModel()
       }
-      // If the message is a displayCred class
+      // If ModelActor has sent a display cred message
     case displayCred(cred, tweets) =>
-      // Tweet number on page
+      // Tweet number on page - used for element ids
       var id = 0
-      // For each prediction send it to the frontend to display next to corresponding tweet
+      // For each prediction, send it to the frontend to display next to corresponding tweet
       for(pred <- cred){
         val message: JsValue = JsObject(Seq(
           "messageType" -> JsString("displayCred"),

@@ -1,0 +1,57 @@
+@()(implicit r: Request[_])
+
+<!DOCTYPE html>
+@import play.mvc.Http.Context.Implicit._
+
+<html>
+  <head>
+    <title>StreetCred</title>
+   		<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+   		<link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/all.min.css")">
+   		<link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/open-iconic-bootstrap.min.css")">      
+   		
+				
+		<link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+				
+		<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+		<script src="@routes.Assets.versioned("javascripts/jquery.easing.min.js")"></script>
+   		<script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
+   		<script src="@routes.Assets.versioned("javascripts/all.min.js")"></script>
+	    <script src="@routes.Assets.versioned("javascripts/home.js")"></script>
+
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    	
+	</head>
+  	<body id="myBody">
+
+		<div class="container" >
+
+		<div class="row">
+  			<div class="col-md-12">
+  				<nav class="navbar navbar-default">
+  					<div class="container-fluid">
+    					<!-- Brand and toggle get grouped for better mobile display -->
+      					<h4 style="font-family: 'Varela Round'"> <a href="./">StreetCred</a></h4>
+    				</div>
+    			</nav>
+  			</div>
+  		</div>
+
+		<div id="resultsDiv"></div>
+		
+		<div class="row">
+  			<div id="searchbar" class="col-md-12">
+  				<div class="input-group mb-3">
+  					<input id="searchText" type="text" class="form-control" placeholder="Enter Search Query" aria-label="Search Query" aria-describedby="basic-addon2">
+  					<div class="input-group-append">
+						<button type="button" class="btn btn-primary" id="searchButton">Search!</button>
+  					</div>
+				</div>
+			</div>
+			
+		</div>
+  		</div>
+       </body>
+
+</html>

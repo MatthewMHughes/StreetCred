@@ -6,48 +6,52 @@
       <change afterPath="$PROJECT_DIR$/StreetCredPlay/app/assets/javascripts/websocket.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/actors/ModelActor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/actors/ModelActor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/actors/SearchActor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/actors/SearchActor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/assets/javascripts/websocket.js" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/assets/javascripts/websocket.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/Crawler.scala" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/model/Crawler.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/Evaluator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/model/Evaluator.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/metadata/.part-00000.crc" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/metadata/.part-00000.crc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/metadata/part-00000" beforeDir="false" afterPath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/metadata/part-00000" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_be88e0c8e236/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_be88e0c8e236/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_be88e0c8e236/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_be88e0c8e236/metadata/part-00000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e8676ca6cf0e/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e8676ca6cf0e/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e8676ca6cf0e/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e8676ca6cf0e/metadata/part-00000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_264dbc2cf753/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_264dbc2cf753/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_264dbc2cf753/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_264dbc2cf753/metadata/part-00000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/data/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/data/.part-00000-29479610-7e72-4fd3-ac9a-16998abea402-c000.snappy.parquet.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/data/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/data/part-00000-29479610-7e72-4fd3-ac9a-16998abea402-c000.snappy.parquet" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_48647b1b5234/metadata/part-00000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/data/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/data/.part-00000-76a4a555-0b1b-4f74-bc69-3dfdc2e788a4-c000.snappy.parquet.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/data/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/data/part-00000-76a4a555-0b1b-4f74-bc69-3dfdc2e788a4-c000.snappy.parquet" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_8e3fee05420f/metadata/part-00000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_3086759dab6d/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_3086759dab6d/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_3086759dab6d/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_3086759dab6d/metadata/part-00000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/data/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/data/.part-00000-15031c27-ca44-4e38-955e-4cdfd2b2eb25-c000.snappy.parquet.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/data/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/data/part-00000-15031c27-ca44-4e38-955e-4cdfd2b2eb25-c000.snappy.parquet" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/metadata/._SUCCESS.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/metadata/.part-00000.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/metadata/_SUCCESS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_ed5dbd1f6b1c/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_017a34f8580d/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_017a34f8580d/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_017a34f8580d/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/0_tok_017a34f8580d/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e7a568c7a252/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e7a568c7a252/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e7a568c7a252/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/1_stopWords_e7a568c7a252/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_9d896681ee9b/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_9d896681ee9b/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_9d896681ee9b/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/2_hashingTF_9d896681ee9b/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/data/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/data/.part-00000-7b6257ad-08fb-4bbd-a8c6-309079c5427d-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/data/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/data/part-00000-7b6257ad-08fb-4bbd-a8c6-309079c5427d-c000.snappy.parquet" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/3_idf_17957783cc11/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/data/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/data/.part-00000-2c8cff4d-fec8-47dc-a274-f14423eb6d72-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/data/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/data/part-00000-2c8cff4d-fec8-47dc-a274-f14423eb6d72-c000.snappy.parquet" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/4_strIdx_a7b48b97b3a5/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_bc7c55ce1cef/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_bc7c55ce1cef/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_bc7c55ce1cef/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/5_vecAssembler_bc7c55ce1cef/metadata/part-00000" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/data/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/data/.part-00000-af769cfe-c23e-4209-8737-3a61b51b6a27-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/data/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/data/part-00000-af769cfe-c23e-4209-8737-3a61b51b6a27-c000.snappy.parquet" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/metadata/._SUCCESS.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/metadata/.part-00000.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/metadata/_SUCCESS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetCredPlay/app/model/the-model/stages/6_dtc_93f8be44123d/metadata/part-00000" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -55,25 +59,6 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="1945688331">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="4" />
-          <entry key="project.open.time.1" value="2" />
-          <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.34" value="1" />
-          <entry key="project.opened" value="5" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Scala" value="2" />
-        </counts>
-      </usages-collector>
-    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -86,13 +71,22 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/StreetCredPlay/app/model/main.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-497">
+            <state>
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/StreetCredPlay/app/model/Crawler.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -101,12 +95,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/StreetCredPlay" />
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="67" />
@@ -120,8 +108,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -129,35 +115,12 @@
               <item name="StreetCred" type="b2602c69:ProjectViewProjectNode" />
               <item name="StreetCred" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="StreetCred" type="b2602c69:ProjectViewProjectNode" />
-              <item name="StreetCred" type="462c0819:PsiDirectoryNode" />
-              <item name="StreetCredPlay" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="StreetCred" type="b2602c69:ProjectViewProjectNode" />
-              <item name="StreetCred" type="462c0819:PsiDirectoryNode" />
-              <item name="StreetCredPlay" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="StreetCred" type="b2602c69:ProjectViewProjectNode" />
-              <item name="StreetCred" type="462c0819:PsiDirectoryNode" />
-              <item name="StreetCredPlay" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="StreetCred" type="b2602c69:ProjectViewProjectNode" />
-              <item name="StreetCred" type="462c0819:PsiDirectoryNode" />
-              <item name="StreetCredPlay" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -194,17 +157,19 @@
       <workItem from="1547291873479" duration="43000" />
       <workItem from="1547292451049" duration="662000" />
       <workItem from="1547463608430" duration="260000" />
+      <workItem from="1548000279594" duration="52000" />
+      <workItem from="1548000500461" duration="5000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1024000" />
+    <option name="totallyTimeSpent" value="1081000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="67" y="25" width="1213" height="695" extended-state="6" />
+    <frame x="67" y="25" width="1299" height="743" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28620395" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29608938" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -222,6 +187,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
+      <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -231,13 +197,11 @@
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info anchor="right" id="Database" order="7" />
       <window_info anchor="right" id="Maven Projects" order="8" />
+      <window_info anchor="right" id="Maven" order="9" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/StreetCredPlay/app/model/Spark.scala">
@@ -249,10 +213,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/StreetCredPlay/app/model/main.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-497">
+        <state>
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StreetCredPlay/app/model/Crawler.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
         </state>
       </provider>
     </entry>

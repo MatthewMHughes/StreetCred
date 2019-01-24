@@ -23,6 +23,7 @@ libraryDependencies += "org.apache.hadoop" % "hadoop-mapreduce-client-core" % "2
 libraryDependencies += "org.apache.hadoop" % "hadoop-common" % "2.7.2"
 libraryDependencies += "commons-io" % "commons-io" % "2.4"
 libraryDependencies ++= Seq( jdbc , ehcache , ws , specs2 % Test , guice )
+libraryDependencies += "co.theasi" %% "plotly" % "0.2.0"
 
 dependencyOverrides ++= Set("com.fasterxml.jackson.core" % "jackson-databind" % "2.6.7.1")
 

@@ -4,7 +4,9 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.SearchController.index
+GET     /                           controllers.HomeController.index
+# Page that shows tweets and cred ratings for the entered query
+GET     /search/:query               controllers.SearchController.index(query)
 # An example controller showing how to use dependency injection
 GET     /socket                      controllers.SearchController.socket
 # Map static resources from the /public folder to the /assets URL path
@@ -13,4 +15,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /scss/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /open-iconic/*file               controllers.Assets.versioned(path="/public", file: Asset)
-      
+

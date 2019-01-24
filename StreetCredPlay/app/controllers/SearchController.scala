@@ -14,8 +14,8 @@ class SearchController @Inject()(cc:ControllerComponents)
   val spark = new Spark
   val model: ActorRef = system.actorOf(ModelActor.props(spark), "model")
 
-  def index = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.ExampleSearch.render(request))
+  def index(query: String) = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.search.render(request, query))
   }
 
   def socket: WebSocket = WebSocket.accept[JsValue, JsValue] { implicit request:RequestHeader =>
