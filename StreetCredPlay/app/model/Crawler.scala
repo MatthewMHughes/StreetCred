@@ -51,7 +51,8 @@ class Crawler(ss: SparkSession) {
     tweetsJson = tweetList.toList
     // Get dataframe for the tweets so we can classify the tweets
     df = ss.read.json(tweetList.toList.toDS)
-    df = df.withColumn("label", typedLit("verified"))
+    // labelS is string representation of a label
+    df = df.withColumn("labelS", typedLit("verified"))
     // Return list of tweet ids to display the tweets on the screen
     idList.toList
   }
@@ -65,19 +66,19 @@ class Crawler(ss: SparkSession) {
     if(change) {
       // if original cred is 1.0 (verified), then set it to be unverified and vice versa
       if (cred == 1.0) {
-        tweetDf = tweetDf.withColumn("label", typedLit("unverified"))
+        tweetDf = tweetDf.withColumn("labelS", typedLit("unverified"))
       }
       else {
-        tweetDf = tweetDf.withColumn("label", typedLit("verified"))
+        tweetDf = tweetDf.withColumn("labelS", typedLit("verified"))
       }
     }
       // Else, the credibility label given was correct and we store it
     else{
       if(cred == 1.0){
-        tweetDf = tweetDf.withColumn("label", typedLit("verified"))
+        tweetDf = tweetDf.withColumn("labelS", typedLit("verified"))
       }
       else{
-        tweetDf = tweetDf.withColumn("label", typedLit("unverified"))
+        tweetDf = tweetDf.withColumn("labelS", typedLit("unverified"))
       }
     }
     // Write tweet to training data

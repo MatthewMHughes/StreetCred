@@ -119,7 +119,7 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
       $"changed_picture",// 14
       $"contains_media",// 15
       $"description_length",// 16
-      $"label",
+      $"labelS",
       $"full_text")
     featureDf
   }

@@ -41,11 +41,5 @@ class ModelActor(spark: Spark) extends Actor{
       evalModel.trainModel()
       val eval = new Evaluator(spark.sc, spark.ss, test, evalModel)
       eval.evaluateModel()
-      // This new model is calculated on all of the tweets not just training data
-      val newModel = new Model(spark.sc, spark.ss, features)
-      newModel.trainModel()
-      /*val tree = newModel.model.stages(6).asInstanceOf[DecisionTreeClassificationModel]
-      print(tree.featureImportances)
-      print(tree.toDebugString)*/
   }
 }

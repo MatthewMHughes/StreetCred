@@ -1,1 +1,1 @@
-{"class":"org.apache.spark.ml.PipelineModel","timestamp":1548068534067,"sparkVersion":"2.3.2","uid":"pipeline_5b413e599a59","paramMap":{"stageUids":["tok_6df44a754b4c","stopWords_6267cd2922db","hashingTF_9a02bf007499","idf_c162b591d2ab","strIdx_fc05c0b8b7b4","vecAssembler_d2fe4f1447c8","dtc_c5477417306c"]}}
+{"class":"org.apache.spark.ml.tuning.CrossValidatorModel","timestamp":1548437118022,"sparkVersion":"2.3.2","uid":"cv_f4be27062f1f","paramMap":{"seed":-1191137437,"numFolds":5,"estimatorParamMaps":[[]]},"avgMetrics":[0.6710488342809823],"persistSubModels":false}
