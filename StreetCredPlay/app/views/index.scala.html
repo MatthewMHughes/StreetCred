@@ -23,7 +23,7 @@
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     	
 	</head>
-  	<body id="myBody">
+	<body id="myBody" data-ws="@routes.HomeController.socket.webSocketURL()">
 
 		<div class="container" >
 
@@ -51,6 +51,19 @@
 			</div>
 			
 		</div>
+			<div class="row">
+				<div class="row">
+					<div class="col-md-12">
+						<nav class="navbar navbar-default">
+							<div class="container-fluid">
+									<!-- Brand and toggle get grouped for better mobile display -->
+								<h4 style="font-family: 'Varela Round'" id="queryText"> Current Trends: </h4>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+			<div id="trends"></div>
   		</div>
        </body>
 

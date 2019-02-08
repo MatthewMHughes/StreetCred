@@ -25,7 +25,6 @@ object SearchActor {
     Props(new SearchActor(out, system, mat, crawler, model, spark))}
   case class getCreds(cred: DataFrame, tweets: List[String]) //message class
   case class retrainModel()//message class
-
 }
 
 class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler, model: ActorRef, spark: Spark) extends Actor {

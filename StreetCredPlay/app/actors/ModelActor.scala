@@ -26,7 +26,7 @@ class ModelActor(spark: Spark) extends Actor{
     case getCreds(cred, tweets) =>
       val extractor = new FeatureExtractor(spark.sc, spark.ss, cred)
       val features = extractor.extractFeatures()
-      val model = new Model(spark.sc, spark.ss, features)
+      val model = new Model(spark.sc, spark.ss, features, 0)
       model.setModel()
       val predictions = model.getPredictions(features)
       sender() ! displayCred(predictions, tweets)
@@ -37,9 +37,13 @@ class ModelActor(spark: Spark) extends Actor{
       val extractor = new FeatureExtractor(spark.sc, spark.ss, df)
       val features = extractor.extractFeatures()
       val Array(train, test) = features.randomSplit(Array[Double](0.7, 0.3))
-      val evalModel = new Model(spark.sc, spark.ss, train)
-      evalModel.trainModel()
-      val eval = new Evaluator(spark.sc, spark.ss, test, evalModel)
-      eval.evaluateModel()
+
+      // Loop through all ablations of groups
+      //for( a <- 0 to 7){
+        val evalModel = new Model(spark.sc, spark.ss, train, 0)
+        evalModel.trainModel()
+        val eval = new Evaluator(spark.sc, spark.ss, test, evalModel)
+        eval.evaluateModel()
+      //}
   }
 }

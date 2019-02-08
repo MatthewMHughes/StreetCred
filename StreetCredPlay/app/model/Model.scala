@@ -4,11 +4,12 @@ import org.apache.spark.SparkContext
 import org.apache.spark.ml.classification.{DecisionTreeClassifier, LinearSVC, LogisticRegression, NaiveBayes}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature.{IDF, _}
+import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
 import org.apache.spark.ml.{Pipeline, PipelineModel}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
-class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame) {
+class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f: Int) {
   var cv: CrossValidatorModel = _
   /*This is a pipeline that takes in a dataframe of the features,
   calculate tf-idf of the tweets and then vectorizes the features with tfidf
@@ -28,7 +29,7 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame) {
     //calculates term frequency of the words
     val tf = new HashingTF()
       .setInputCol(remover.getOutputCol)
-      .setNumFeatures(1000)
+      .setNumFeatures(2000)
       .setOutputCol("rawFeatures")
 
     //calculated the tf-idf of the words - final feature
@@ -41,10 +42,41 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame) {
       .setInputCol("labelS")
       .setOutputCol("label")
 
-    //creates vector of features
-    val vectorAssembler = new VectorAssembler()
-      .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "has_geo", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
-      .setOutputCol("features")
+    var vectorAssembler = new VectorAssembler()
+    f match {
+      case 0 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
+          .setOutputCol("features")
+      case 1 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("character_count", "word_count", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
+          .setOutputCol("features")
+      case 2 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length"))
+          .setOutputCol("features")
+      case 3 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("contains_url", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "description_length", idf.getOutputCol))
+          .setOutputCol("features")
+      case 4 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
+          .setOutputCol("features")
+      case 5 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "contains_media", idf.getOutputCol))
+          .setOutputCol("features")
+      case 6 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("contains_url"))
+          .setOutputCol("features")
+      case 7 =>
+        vectorAssembler = new VectorAssembler()
+        .setInputCols(Array("contains_url", idf.getOutputCol))
+        .setOutputCol("features")
+    }
 
     val lr = new LogisticRegression()
       .setMaxIter(10)
@@ -61,6 +93,8 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame) {
 
     val dc = new DecisionTreeClassifier()
       .setLabelCol("label")
+      .setMaxDepth(5)
+      .setMaxBins(64)
 
     //creates a pipeline of the model
     val pipeline = new Pipeline()

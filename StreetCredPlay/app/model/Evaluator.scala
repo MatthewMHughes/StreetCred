@@ -5,6 +5,9 @@ import org.apache.spark.ml.classification.{DecisionTreeClassificationModel, Deci
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import co.theasi.plotly
+import org.apache.spark.ml.PipelineModel
+import org.apache.spark.ml.feature.HashingTF
+
 import util.Random
 
 class Evaluator(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val theModel: Model) {
@@ -35,23 +38,33 @@ class Evaluator(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, v
     val model = theModel.cv
     val predictions = model.transform(df)
     for (metric <- model.avgMetrics){
-      println(metric)
+      println("average AUC ROC: " + metric)
     }
 
     val totalPred = predictions.count()
     val totalCorrect = predictions.filter(predictions("label") === predictions("prediction")).count()
-    println("Accuracy of test data: %d", totalCorrect.toFloat/totalPred)
+    println("Accuracy of test data: " + totalCorrect.toFloat/totalPred)
 
     val tp = truePositive(predictions)
     val fp = falsePositive(predictions)
     val fn = falseNegative(predictions)
     val tn = trueNegative(predictions)
-    println("True Positive: %d     False Positive: %d", tp, fp)
-    println("False Negative: %d    True Negative: %d", fn, tn)
+    println("True Positive: " + tp + "     False Positive: " + fp)
+    println("False Negative: " + fn + "    True Negative: " + tn)
 
     val binEval = new BinaryClassificationEvaluator()
       .setLabelCol("label")
     println(binEval.evaluate(predictions))
+    println("")
 
+    val precision = tp.toFloat / (tp + fp)
+    val recall = tp.toFloat / (tp + fn)
+    val f1 = 2 * (precision * recall) / (precision + recall)
+    val f5 = (1 + (0.5 * 0.5)) * (precision * recall) / (0.5 * precision + recall)
+    println("precision: " + precision)
+    println("recall: " + recall)
+    println("f1: " + f1)
+    println("f5: " + f5)
+    println("")
   }
 }

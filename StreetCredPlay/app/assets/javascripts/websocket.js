@@ -205,6 +205,7 @@ function updateCredButtonPressed(id, cred){
 
 
 function retrainButtonPressed(){
+    console.log("retrain");
     ws.send(JSON.stringify({
         messageType: "retrainModel"
     }))

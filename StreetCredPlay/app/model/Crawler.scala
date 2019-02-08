@@ -86,18 +86,10 @@ class Crawler(ss: SparkSession) {
     MongoSpark.save(tweetDf, writeConfig)
   }
 
-  def getTopHashtags(): List[String]={
+  def getTopHashtags(): Array[Trend]={
     val trend = twitter.trends()
-    val trends = trend.getPlaceTrends(21125)
+    val trends = trend.getPlaceTrends(23424975)
     val hashtags = trends.getTrends
-    var trendBuff = new ListBuffer[String]()
-    for (hashtag <- hashtags){
-      trendBuff+=hashtag.getQuery
-    }
-    trendBuff.toList
-  }
-
-  def streamHashtags(): Unit={
-
+    hashtags
   }
 }

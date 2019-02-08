@@ -5,10 +5,12 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
+# Home page socket
+GET     /socket/home                controllers.HomeController.socket
 # Page that shows tweets and cred ratings for the entered query
 GET     /search/:query               controllers.SearchController.index(query)
-# An example controller showing how to use dependency injection
-GET     /socket                      controllers.SearchController.socket
+# Search page socket
+GET     /socket/search                    controllers.SearchController.socket
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
