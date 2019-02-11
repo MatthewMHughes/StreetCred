@@ -6,6 +6,7 @@ import com.mongodb.spark.config.{ReadConfig, WriteConfig}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.typedLit
+import play.api.libs.json.{JsString, JsValue}
 
 import scala.collection.mutable.ListBuffer
 import twitter4j.auth.AccessToken
@@ -28,25 +29,34 @@ class Crawler(ss: SparkSession) {
     "294518321-uByqtgwisRTvuYoUYoVcQjr965KrUFbwXbSI563B",
     "kdqXnHuCeBJjvscsizntPej490YhDPF2lj6ORjVfBXhIq"))
   //Takes in the query and return the queryResult from twitter api
-  def searchTweets(query: String): QueryResult={
+  def searchTweets(query: String, setting: JsValue): QueryResult={
     val theQuery = new Query(query) // create new query with page size 20 and tweets being in english
     theQuery.setCount(20)
     theQuery.setLang("en")
+    if(setting.equals(JsString("top"))){
+      theQuery.setResultType(Query.POPULAR)
+    }
+    else if(setting.equals(JsString("new"))){
+      theQuery.setResultType(Query.RECENT)
+    }
+    else{print("this is gubbed")}
     twitter.search(theQuery) // Search twitter rest api for the query
   }
 
   // Takes in the query and returns a list of twitter ids
-  def search(query: String): List[String]= {
+  def search(query: String, setting: JsValue): List[String]= {
     // To build a list of tweet ids
     var idList = new ListBuffer[String]()
     // To create a list of raw json for the tweets - can be easily converted to a dataframe
     var tweetList = new ListBuffer[String]()
-    val tweets = searchTweets(query).getTweets
+    val tweets = searchTweets(query, setting).getTweets
     // For each tweet, append both the lists
     for(tweet <- tweets){
-      idList+= String.valueOf(tweet.getId)
-      val json = TwitterObjectFactory.getRawJSON(tweet)
-      tweetList+=json
+      //if(!tweet.isRetweet){
+        idList+= String.valueOf(tweet.getId)
+        val json = TwitterObjectFactory.getRawJSON(tweet)
+        tweetList+=json
+      //}
     }
     tweetsJson = tweetList.toList
     // Get dataframe for the tweets so we can classify the tweets

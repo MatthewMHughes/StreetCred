@@ -32,6 +32,11 @@ class Evaluator(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, v
     p.filter(p("label")===1 && p("prediction")===0).count()
   }
 
+  def showWrong(p: DataFrame): Unit ={
+    val wrong = p.filter(p("label") =!= p("prediction"))
+    wrong.show(50)
+  }
+
 
   //Creates and prints out evaluation metrics model after the test data has been fitted by the model
   def evaluateModel(): Unit ={
@@ -49,6 +54,7 @@ class Evaluator(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, v
     val fp = falsePositive(predictions)
     val fn = falseNegative(predictions)
     val tn = trueNegative(predictions)
+    showWrong(predictions)
     println("True Positive: " + tp + "     False Positive: " + fp)
     println("False Negative: " + fn + "    True Negative: " + tn)
 

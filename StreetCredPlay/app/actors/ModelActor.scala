@@ -16,7 +16,7 @@ import play.api.libs.json.JsValue
 
 object ModelActor {
   def props(spark: Spark): Props = Props(new ModelActor(spark))
-  case class displayCred(cred: Array[Double], tweets: List[String])
+  case class displayCred(cred: Array[Double], tweets: List[String], explanation: Array[Float])
 }
 
 class ModelActor(spark: Spark) extends Actor{
@@ -29,7 +29,8 @@ class ModelActor(spark: Spark) extends Actor{
       val model = new Model(spark.sc, spark.ss, features, 0)
       model.setModel()
       val predictions = model.getPredictions(features)
-      sender() ! displayCred(predictions, tweets)
+      val explanation = model.getExplanation(features)
+      sender() ! displayCred(predictions, tweets, explanation)
     // Retrain the model with updated training data
     case retrainModel() =>
       val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Train"))

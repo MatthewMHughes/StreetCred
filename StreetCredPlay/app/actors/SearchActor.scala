@@ -35,7 +35,7 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
       // If the message is "doSearch" - search for tweets
       if(socketMessage == JsString("doSearch")){
         // Query twitter crawler to get tweets for query given by user
-        val tweets = crawler.search(msg("query").toString)
+        val tweets = crawler.search(msg("query").toString, msg("setting"))
         // Tweet number on page
         var id = 0
         for(tweet <- tweets){
@@ -71,7 +71,7 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         model ! retrainModel()
       }
       // If ModelActor has sent a display cred message
-    case displayCred(cred, tweets) =>
+    case displayCred(cred, tweets, explanation) =>
       // Tweet number on page - used for element ids
       var id = 0
       // For each prediction, send it to the frontend to display next to corresponding tweet
@@ -79,7 +79,8 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         val message: JsValue = JsObject(Seq(
           "messageType" -> JsString("displayCred"),
           "status" -> JsNumber(pred),
-          "id" -> JsNumber(id)
+          "id" -> JsNumber(id),
+          "explanation" -> JsNumber(explanation(id).toDouble)
         ))
         id+=1
         out ! message

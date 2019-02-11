@@ -1,4 +1,4 @@
-@()(implicit r: Request[_], query: String)
+@()(implicit r: Request[_], query: String, setting: String)
 
 <!DOCTYPE html>
 @import play.mvc.Http.Context.Implicit._
@@ -39,11 +39,8 @@
                 </div>
             </div>
 
-
-
-
-
             <div id="resultsDiv" data-ws=@query></div>
+            <div id="settingDiv" data-ws=@setting></div>
 
             <div class="row">
                 <div id="searchbar" class="col-md-12">
@@ -51,6 +48,18 @@
                         <input id="searchText" type="text" class="form-control" placeholder="Enter Search Query" aria-label="Search Query" aria-describedby="basic-addon2">
                         <div class="input-group-append">
                             <button type="button" class="btn btn-primary" id="searchButton">Search!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="buttons" class="col-md-12">
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="topButton">Top Tweets</button>
+                        </div>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="newButton">New Tweets</button>
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,8 @@ GET     /                           controllers.HomeController.index
 # Home page socket
 GET     /socket/home                controllers.HomeController.socket
 # Page that shows tweets and cred ratings for the entered query
-GET     /search/:query               controllers.SearchController.index(query)
+GET     /search/:query/top            controllers.SearchController.index(query, setting = "top")
+GET     /search/:query/new            controllers.SearchController.index(query, setting = "new")
 # Search page socket
 GET     /socket/search                    controllers.SearchController.socket
 # Map static resources from the /public folder to the /assets URL path

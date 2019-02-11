@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // user clicks search button, execute search button pressed function
     document.getElementById('searchButton')
         .addEventListener('click', searchButtonPressed);
+    document.getElementById('topButton')
+        .addEventListener('click', openTopPage);
+    document.getElementById('newButton')
+        .addEventListener('click', openNewPage);
     // user clicks retrain button, model is retrained - just for experimenting with classifier
     document.getElementById('retrainModel')
         .addEventListener('click', retrainButtonPressed);
@@ -38,6 +42,8 @@ function initialize() {
     var queryEl = document.getElementById("resultsDiv");
     var query = queryEl.dataset.ws;
     query = query.replace(/~/g, " ");
+    var settingEl = document.getElementById("settingDiv");
+    var setting = settingEl.dataset.ws;
 
     // Update tab title
     var title = document.getElementById("title");
@@ -50,7 +56,7 @@ function initialize() {
     queryText.appendChild(text);
 
     // open web socket connection to the search actor
-    openWebSocketConnection(query);
+    openWebSocketConnection(query, setting);
     var tweets = document.getElementById("tweets");
     tweets.innerHTML = "";
     // adds loading message for tweets
@@ -65,7 +71,7 @@ function initialize() {
 // Top level control logic
 // ######################################################################################
 
-function openWebSocketConnection(query) {
+function openWebSocketConnection(query, setting) {
 
     var wsURL = document.getElementById("myBody");
     ws = new WebSocket(wsURL.dataset.ws);
@@ -76,9 +82,11 @@ function openWebSocketConnection(query) {
             // Once handshake connection is confirmed, search for tweet for user's query
             case "init":
                 console.log("received");
+                console.log("setting");
                 ws.send(JSON.stringify({
                     messageType: "doSearch",
-                    query: query
+                    query: query,
+                    setting: setting
                 }));
                 break;
                 // im sure this had a use
@@ -156,6 +164,18 @@ function openWebSocketConnection(query) {
                     updateCredButtonPressed(message.id, message.status);
                 }, false);
 
+                // Button that displays reason for credibility
+                var button3 = document.createElement("button");
+                button3.setAttribute("type", "button");
+                var buttonId3 = "id-"+String(message.id)+"-button3";
+                button3.setAttribute("id", buttonId3);
+                var buttonText3 = document.createTextNode("Details");
+                button3.appendChild(buttonText3);
+                div.appendChild(button3);
+                button3.addEventListener("click", function(){
+                    detailButtonPressed(message.explanation);
+                }, false);
+
             default:
                 return console.log(message);
         }
@@ -170,7 +190,7 @@ function searchButtonPressed() {
     console.log(searchText);
     var newStr = searchText.replace(/\s/g, "~");
     console.log(newStr);
-    window.location.href = "/search/" + newStr;
+    window.location.href = "/search/" + newStr + "/top";
 }
 
 function keepCredButtonPressed(id, cred){
@@ -209,4 +229,22 @@ function retrainButtonPressed(){
     ws.send(JSON.stringify({
         messageType: "retrainModel"
     }))
+}
+
+function openTopPage(){
+    var queryEl = document.getElementById("resultsDiv");
+    var query = queryEl.dataset.ws;
+    var newStr = query.replace(/\s/g, "~");
+    window.location.href = "/search/" + newStr + "/top";
+}
+
+function openNewPage(){
+    var queryEl = document.getElementById("resultsDiv");
+    var query = queryEl.dataset.ws;
+    var newStr = query.replace(/\s/g, "~");
+    window.location.href = "/search/" + newStr + "/new";
+}
+
+function detailButtonPressed(explanation){
+    console.log(explanation)
 }

@@ -131,8 +131,8 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
     pred.select("prediction").rdd.map(r => r(0).asInstanceOf[Double]).collect()
   }
 
-  def getExplaination(predDf: DataFrame): Array[Double] = {
+  def getExplanation(predDf: DataFrame): Array[Float] = {
     val pred = cv.transform(predDf)
-    pred.select("user_has_url").rdd.map(r => r(0).asInstanceOf[Double]).collect()
+    pred.select("user_has_url").rdd.map(r => r(0).asInstanceOf[Float]).collect()
   }
 }

@@ -49,7 +49,7 @@ function openWebSocketConnection() {
                 a.appendChild(linkText);
                 a.title = message.trend;
                 var newStr = message.trend.replace(/\s/g, "~");
-                a.href = "./search/"+newStr;
+                a.href = "./search/"+newStr+"/top";
                 div.appendChild(a);
                 trendsList.appendChild(div);
                 break;
@@ -69,6 +69,6 @@ function searchButtonPressed() {
         console.log(searchText);
         var newStr = searchText.replace(/\s/g, "~");
         console.log(newStr);
-        window.location.href = "/search/" + newStr;
+        window.location.href = "/search/" + newStr + "/top";
     }
 }
