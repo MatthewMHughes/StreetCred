@@ -4,10 +4,13 @@ import org.apache.spark.SparkContext
 import org.apache.spark.ml.classification.{DecisionTreeClassifier, LinearSVC, LogisticRegression, NaiveBayes}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature.{IDF, _}
+import org.apache.spark.ml.linalg.SparseVector
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
 import org.apache.spark.ml.{Pipeline, PipelineModel}
 import org.apache.spark.sql.{DataFrame, SparkSession}
+
+import scala.collection.mutable.ListBuffer
 
 class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f: Int) {
   var cv: CrossValidatorModel = _
@@ -33,9 +36,7 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
       .setOutputCol("rawFeatures")
 
     //calculated the tf-idf of the words - final feature
-    val idf = new IDF()
-      .setInputCol(tf.getOutputCol)
-      .setOutputCol("tfidf")
+    val idf = IDF.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model/tfidf")
 
     //indexes the credibility labels to 0 or 1. 1 if verified, 0 otherwise.
     val labelIndexer = new StringIndexer()
@@ -131,8 +132,17 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
     pred.select("prediction").rdd.map(r => r(0).asInstanceOf[Double]).collect()
   }
 
-  def getExplanation(predDf: DataFrame): Array[Float] = {
+  /* This will return explanation for each tweet to why its been given a specific label */
+  def getExplanation(predDf: DataFrame): List[String] = {
+    val bm = PipelineModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model/bestModel")
     val pred = cv.transform(predDf)
-    pred.select("user_has_url").rdd.map(r => r(0).asInstanceOf[Float]).collect()
+    val vectors = pred.select("features").rdd.map(r => r(0).asInstanceOf[SparseVector]).collect()
+    val dec = new Decision(sc, ss, bm)
+    val root = dec.createTree()
+    val buffer = new ListBuffer[String]()
+    for(vector <- vectors){
+      buffer+=dec.explain(vector, 15)
+    }
+    buffer.toList
   }
 }

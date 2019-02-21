@@ -18,6 +18,7 @@ import collection.JavaConversions._
 class Crawler(ss: SparkSession) {
   var df: DataFrame = _ // The dataframe of tweets
   var tweetsJson: java.util.List[String] = _ // List of tweets in json format
+  var nextPage: Query = _
   import ss.implicits._
   val cb = new ConfigurationBuilder()
   cb.setJSONStoreEnabled(true)
@@ -31,15 +32,14 @@ class Crawler(ss: SparkSession) {
   //Takes in the query and return the queryResult from twitter api
   def searchTweets(query: String, setting: JsValue): QueryResult={
     val theQuery = new Query(query) // create new query with page size 20 and tweets being in english
-    theQuery.setCount(20)
-    theQuery.setLang("en")
     if(setting.equals(JsString("top"))){
       theQuery.setResultType(Query.POPULAR)
     }
     else if(setting.equals(JsString("new"))){
       theQuery.setResultType(Query.RECENT)
     }
-    else{print("this is gubbed")}
+    theQuery.setCount(25)
+    theQuery.setLang("en")
     twitter.search(theQuery) // Search twitter rest api for the query
   }
 
@@ -47,20 +47,44 @@ class Crawler(ss: SparkSession) {
   def search(query: String, setting: JsValue): List[String]= {
     // To build a list of tweet ids
     var idList = new ListBuffer[String]()
-    // To create a list of raw json for the tweets - can be easily converted to a dataframe
     var tweetList = new ListBuffer[String]()
-    val tweets = searchTweets(query, setting).getTweets
-    // For each tweet, append both the lists
-    for(tweet <- tweets){
-      //if(!tweet.isRetweet){
-        idList+= String.valueOf(tweet.getId)
-        val json = TwitterObjectFactory.getRawJSON(tweet)
-        tweetList+=json
-      //}
+    // To create a list of raw json for the tweets - can be easily converted to a dataframe
+    if (nextPage == null){
+      val querySet = searchTweets(query, setting)
+      val tweets = querySet.getTweets
+      nextPage = querySet.nextQuery()
+      for(tweet <- tweets){
+        if(!tweet.isRetweet){
+          idList+= String.valueOf(tweet.getId)
+          val json = TwitterObjectFactory.getRawJSON(tweet)
+          tweetList+=json
+        }
+      }
     }
-    tweetsJson = tweetList.toList
+    else{
+      val querySet = twitter.search(nextPage)
+      if(!querySet.hasNext){
+        idList += "No more"
+        return idList.toList
+      }
+      nextPage = querySet.nextQuery()
+      val tweets = querySet.getTweets
+      for(tweet <- tweets){
+        if(!tweet.isRetweet){
+          idList+= String.valueOf(tweet.getId)
+          val json = TwitterObjectFactory.getRawJSON(tweet)
+          tweetList+=json
+        }
+      }
+    }
+    // For each tweet, append both the lists
+    if(tweetsJson == null){
+      tweetsJson = tweetList.toList
+    }else{
+      tweetsJson = List.concat(tweetsJson, tweetList.toList)
+    }
     // Get dataframe for the tweets so we can classify the tweets
-    df = ss.read.json(tweetList.toList.toDS)
+    df = ss.read.json(tweetsJson.toList.toDS)
     // labelS is string representation of a label
     df = df.withColumn("labelS", typedLit("verified"))
     // Return list of tweet ids to display the tweets on the screen

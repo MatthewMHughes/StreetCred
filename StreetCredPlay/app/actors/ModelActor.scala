@@ -16,7 +16,7 @@ import play.api.libs.json.JsValue
 
 object ModelActor {
   def props(spark: Spark): Props = Props(new ModelActor(spark))
-  case class displayCred(cred: Array[Double], tweets: List[String], explanation: Array[Float])
+  case class displayCred(cred: Array[Double], tweets: List[String], explanation: List[String])
 }
 
 class ModelActor(spark: Spark) extends Actor{

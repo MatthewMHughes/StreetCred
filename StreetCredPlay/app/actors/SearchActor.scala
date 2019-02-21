@@ -28,6 +28,7 @@ object SearchActor {
 }
 
 class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler, model: ActorRef, spark: Spark) extends Actor {
+  var const = 0
   def receive:PartialFunction[Any, Unit] = {
     // If its a message from the frontend websocket we receive a JSValue
     case msg: JsValue =>
@@ -37,19 +38,31 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         // Query twitter crawler to get tweets for query given by user
         val tweets = crawler.search(msg("query").toString, msg("setting"))
         // Tweet number on page
-        var id = 0
+        var idt = const
+        var more = true
         for(tweet <- tweets){
+          if(tweet.equals("No more")){
+            more = false
+            val message: JsValue = JsObject(Seq(
+              "messageType" -> JsString("noTweets")
+            ))
+            out ! message
+          }
           // Create and send message to frontend with twitter id and tweet number
-          val message: JsValue = JsObject(Seq(
-            "messageType" -> JsString("displayTweet"),
-            "status" -> JsString(tweet),
-            "id" -> JsNumber(id)
-          ))
-          id+=1
-          out ! message
+          else{
+            val message: JsValue = JsObject(Seq(
+              "messageType" -> JsString("displayTweet"),
+              "status" -> JsString(tweet),
+              "id" -> JsNumber(idt)
+            ))
+            idt+=1
+            out ! message
+          }
         }
         // Send getCreds message to model actor to get credibility of the tweets
-        model ! getCreds(crawler.df, tweets)
+        if(more) {
+          model ! getCreds(crawler.df, tweets)
+        }
       }
         // If the message is "updateCred" from frontend websocket - user disagrees with credibility
       else if(socketMessage == JsString("updateCred")){
@@ -73,17 +86,22 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
       // If ModelActor has sent a display cred message
     case displayCred(cred, tweets, explanation) =>
       // Tweet number on page - used for element ids
-      var id = 0
       // For each prediction, send it to the frontend to display next to corresponding tweet
-      for(pred <- cred){
+      var id = const
+      for(id <- id until cred.length){
         val message: JsValue = JsObject(Seq(
           "messageType" -> JsString("displayCred"),
-          "status" -> JsNumber(pred),
+          "status" -> JsNumber(cred(id)),
           "id" -> JsNumber(id),
-          "explanation" -> JsNumber(explanation(id).toDouble)
+          "explanation" -> JsString(explanation(id))
         ))
-        id+=1
+        print(id, explanation.length)
+        const+=1
         out ! message
       }
+      val message: JsValue = JsObject(Seq(
+        "messageType" -> JsString("unlock")
+      ))
+      out ! message
   }
 }

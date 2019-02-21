@@ -75,6 +75,19 @@ function openWebSocketConnection(query, setting) {
 
     var wsURL = document.getElementById("myBody");
     ws = new WebSocket(wsURL.dataset.ws);
+    // This will load more tweets when the user reaches below a threshhold on the screen
+    var reach = false;
+    window.onscroll = function() {
+        if (((window.innerHeight + window.pageYOffset) * 1.5) >= document.body.offsetHeight && reach === true) {
+            console.log("search more");
+            ws.send(JSON.stringify({
+                messageType: "doSearch",
+                query: "test",
+                setting: "test"
+            }));
+            reach = false;
+        }
+    };
     ws.onmessage = function (event) {
         var message;
         message = JSON.parse(event.data);
@@ -121,6 +134,7 @@ function openWebSocketConnection(query, setting) {
                     text.appendChild(headCred);
                     document.getElementById('tweet').innerHTML+=message.status;
                 });
+                break;
             case "displayCred":
                 var id = "id-"+String(message.id)+"-cred";
                 div = document.getElementById(id);
@@ -175,7 +189,20 @@ function openWebSocketConnection(query, setting) {
                 button3.addEventListener("click", function(){
                     detailButtonPressed(message.explanation);
                 }, false);
-
+                break;
+            case "unlock":
+                reach = true;
+                console.log("please work");
+                break;
+            case "noTweets":
+                var t = document.getElementById("tweets");
+                var d = document.createElement("div");
+                d.setAttribute("id", "1000");
+                d.setAttribute("class", "row");
+                var tex = document.createTextNode("No more tweets!");
+                d.appendChild(tex);
+                t.appendChild(d);
+                break;
             default:
                 return console.log(message);
         }
@@ -246,5 +273,5 @@ function openNewPage(){
 }
 
 function detailButtonPressed(explanation){
-    console.log(explanation)
+    alert(explanation)
 }
