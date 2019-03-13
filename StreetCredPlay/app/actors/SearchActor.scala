@@ -21,7 +21,7 @@ object SearchActor {
     ))
     out ! msg
     //create a new twitter crawler to search for tweets
-    val crawler = new Crawler(spark.ss)
+    val crawler = new Crawler(spark.ss, spark.sc)
     Props(new SearchActor(out, system, mat, crawler, model, spark))}
   case class getCreds(cred: DataFrame, tweets: List[String]) //message class
   case class retrainModel()//message class
@@ -72,6 +72,28 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         // change is true so the ModelActor knows to change the credibility label
         crawler.updateCred(tid, cred, change=true)
       }
+      else if(socketMessage == JsString("getTrends")){
+        val trends = crawler.getTopHashtags(msg("id").toString.toInt)
+        var count = 0
+        for (trend <- trends){
+          if (count < 10){
+            var vol = "<10000"
+            val volume = trend.getTweetVolume
+            if(volume != -1){
+              vol = volume.toString
+            }
+            if(trend.getName.charAt(0) != '#'){
+              val message: JsValue = JsObject(Seq(
+                "messageType" -> JsString("displayTrend"),
+                "trend" -> JsString(trend.getName),
+                "volume" -> JsString(vol)
+              ))
+              out ! message
+              count+=1
+            }
+          }
+        }
+      }
         // If the message is "keepCred" from frontend websocket - user agrees with credibility
       else if(socketMessage == JsString("keepCred")){
         val tid = msg("id").toString.toInt
@@ -80,8 +102,24 @@ class SearchActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler
         // change is false so the ModelActor knows to keep the credibility label the same
         crawler.updateCred(tid, cred, change=false)
       }
+      else if(socketMessage == JsString("addSearch")){
+        var query = msg("query").toString()
+        query = query.substring(1, (query.length-1))
+        crawler.addSearch(query)
+      }
       else if(socketMessage == JsString("retrainModel")){
         model ! retrainModel()
+      }
+      else if(socketMessage == JsString("getLoc")){
+        val locations = crawler.getLocations()
+        for((k, v) <- locations){
+          val message: JsValue= JsObject(Seq(
+            "messageType" -> JsString("displayOption"),
+            "id" -> JsString(k),
+            "name" -> JsString(v)
+          ))
+          out ! message
+        }
       }
       // If ModelActor has sent a display cred message
     case displayCred(cred, tweets, explanation) =>

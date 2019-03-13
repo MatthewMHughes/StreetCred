@@ -1,0 +1,114 @@
+@()(implicit r: Request[_])
+
+<!DOCTYPE html>
+@import play.mvc.Http.Context.Implicit._
+
+<html>
+    <head>
+        <title>StreetCred</title>
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/all.min.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/open-iconic-bootstrap.min.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/style.css")">
+
+
+        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+        <script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/jquery.easing.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/all.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/recent.js")"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    </head>
+    </head>
+    <body class="bg-light" id="myBody" data-ws="@routes.RecentController.socket.webSocketURL()">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="/">StreetCred</a>
+                        </div>
+                        <ul class="nav navbar-nav">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/about">About</a></li>
+                            <li><a href="/top">Top Searches</a></li>
+                            <li class="active"><a href="/recent">Recent Searches</a></li>
+                        </ul>
+                        <ul class = "nav navbar-nav navbar-right">
+                            <li><input type="text" id="searchText" class="form-control" placeholder="Enter Search Query"></li>
+                            <li><button type="button" class="btn btn-primary" id="searchButton">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class = "col-md-4">
+                    <div class="list-group">
+                        <div class="list-group-item list-group-item-action flex-column align-items-start active">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h4 class="mb-1">Current Trends</h4>
+                                <small id="loc">Worldwide</small>
+                            </div>
+                                <!-- Button to Open the Modal -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                                <u>Change Location</u>
+                            </button>
+                        </div>
+                        <div id="trends"></div>
+                    </div>
+                </div>
+                <div class = "col-md-8 fa-pull-right">
+                    <div class="jumbotron bg-white text-primary">
+                        <h1 class="display-4">StreetCred</h1>
+                        <p class="lead">StreetCred uses a decision tree which is trained on 2900 tweets to calculate credibility!</p>
+                        <hr class="my-4">
+                        <p>Clicking on details next to a tweet will show how the decision tree decided whether the specific tweet is credible or uncredible.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!-- The Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                        <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Change Location</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                        <!-- Modal body -->
+                    <div class="modal-body">
+                        <p>
+                            Country
+                            <select id="type" name="type">
+                                <option value="1">Worldwide</option>
+                            </select>
+                        </p>
+                    </div>
+
+                        <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="submitLoc" data-dismiss="modal">Change Location</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

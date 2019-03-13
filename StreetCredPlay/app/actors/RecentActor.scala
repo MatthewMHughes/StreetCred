@@ -8,18 +8,18 @@ import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue}
 
 import scala.collection.mutable.ListBuffer
 
-object HomeActor {
+object RecentActor {
   def props(out: ActorRef, system: ActorSystem, mat: Materializer, spark: Spark): Props = {
     val msg: JsValue = JsObject(Seq(
       "messageType" -> JsString("init")
     ))
     out ! msg
     val crawler = new Crawler(spark.ss, spark.sc)
-    Props(new HomeActor(out, system, mat, crawler, spark))
+    Props(new RecentActor(out, system, mat, crawler, spark))
   }
 }
 
-class HomeActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler, spark: Spark) extends Actor {
+class RecentActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: Crawler, spark: Spark) extends Actor {
 
   def receive:PartialFunction[Any, Unit] = {
     case msg: JsValue =>

@@ -99,7 +99,7 @@ function searchButtonPressed() {
         }
         newStr += searchText.substring(1,searchText.length).replace(/\s/g, "~");
         console.log("/search/" + newStr + "/top");
-        window.location.href = "/search/" + newStr + "/top";
+        window.location.href = "./search/" + newStr + "/top";
     }
 }
 

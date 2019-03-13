@@ -7,14 +7,14 @@ import model.Spark
 import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
-import actors.HomeActor
+import actors.AboutActor
 
 /**
   * This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) (implicit system: ActorSystem, mat: Materializer)
+class AboutController @Inject()(cc: ControllerComponents) (implicit system: ActorSystem, mat: Materializer)
   extends AbstractController(cc) {
   val spark = new Spark
   /**
@@ -24,12 +24,12 @@ class HomeController @Inject()(cc: ControllerComponents) (implicit system: Actor
     * a path of `/`.
     */
   def index = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index.render(request))
+    Ok(views.html.about.render(request))
   }
 
   def socket: WebSocket = WebSocket.accept[JsValue, JsValue] { implicit request:RequestHeader =>
     ActorFlow.actorRef { out =>
-      HomeActor.props(out, system, mat, spark)
+      AboutActor.props(out, system, mat, spark)
     }
   }
 }

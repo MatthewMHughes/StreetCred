@@ -4259,7 +4259,7 @@ input[type="button"].btn-block {
 .navbar-expand > .container-fluid {
   -ms-flex-wrap: nowrap;
   flex-wrap: nowrap;
-}
+
 
 .navbar-expand .navbar-collapse {
   display: -ms-flexbox !important;
