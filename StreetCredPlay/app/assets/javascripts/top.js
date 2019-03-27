@@ -40,10 +40,15 @@ function openWebSocketConnection() {
     ws.onmessage = function (event) {
         var message;
         message = JSON.parse(event.data);
+        var trendsList = document.getElementById("trends");
         switch (message.messageType) {
             // when webpage is loaded we want to collect trends
             case "init":
+                trendsList.innerHTML = "";
                 console.log("connection accepted: get Trends");
+                ws.send(JSON.stringify({
+                    messageType: "getSearches"
+                }));
                 ws.send(JSON.stringify({
                     messageType: "getTrends",
                     id: 1
@@ -53,7 +58,6 @@ function openWebSocketConnection() {
             case "displayTrend":
                 console.log("received trend: " + message.trend);
                 console.log("volume of tweets: " + message.volume);
-                var trendsList = document.getElementById("trends");
                 var a = document.createElement('a');
                 var linkText = document.createTextNode(message.trend);
                 a.appendChild(linkText);
@@ -73,12 +77,32 @@ function openWebSocketConnection() {
                 console.log(message.name);
                 var select = document.getElementById("type");
                 select.options[select.options.length] = new Option(message.name, message.id);
+                break;
+            case "displaySearch":
+                console.log(message.query);
+                console.log(message.percentage);
+                var list = message.query.split(" ");
+                var rank = list[0];
+                var search = "";
+                for (i = 1; i < list.length; i++){
+                    search = search + list[i] + " ";
+                }
+                var link = document.getElementById("link"+rank);
+                link.innerHTML = search;
+                link.title = search;
+                newStr = search.replace(/\s/g, "~");
+                link.href = "/search/"+newStr+"/top";
+                var perc = document.createElement("span");
+                perc.setAttribute("class", "badge");
+                perc.innerHTML = message.percentage + "% credibility";
+                link.appendChild(perc);
+                break;
             default:
                 return console.log(message);
         }
     };
     ws.onclose = function (event) {
-        // do nothing
+        initialize()
     }
 }
 
@@ -103,6 +127,7 @@ function searchButtonPressed() {
     }
 }
 
+// Get locations
 function getLocation() {
     console.log("hello?");
     ws.send(JSON.stringify({
@@ -110,6 +135,7 @@ function getLocation() {
     }))
 }
 
+// Change location of trends
 function changeLocation() {
     console.log("hello");
     var sel = document.getElementById("type");

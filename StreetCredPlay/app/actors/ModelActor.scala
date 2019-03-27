@@ -21,12 +21,12 @@ object ModelActor {
 
 class ModelActor(spark: Spark) extends Actor{
 
-  def receive: PartialFunction[Any, Unit] ={
+  def receive: PartialFunction[Any, Unit] = {
     // Get credibibilities for a given list of tweets
     case getCreds(cred, tweets) =>
       val extractor = new FeatureExtractor(spark.sc, spark.ss, cred)
       val features = extractor.extractFeatures()
-      val model = new Model(spark.sc, spark.ss, features, 0)
+      val model = new Model(spark.sc, spark.ss, features, 0, 0)
       model.setModel()
       val predictions = model.getPredictions(features)
       val explanation = model.getExplanation(features)
@@ -40,11 +40,13 @@ class ModelActor(spark: Spark) extends Actor{
       val Array(train, test) = features.randomSplit(Array[Double](0.7, 0.3))
 
       // Loop through all ablations of groups
-      //for( a <- 0 to 7){
-        val evalModel = new Model(spark.sc, spark.ss, train, 0)
-        evalModel.trainModel()
-        val eval = new Evaluator(spark.sc, spark.ss, test, evalModel)
-        eval.evaluateModel()
-      //}
+      for( a <- 0 to 9){
+        if(a == 0){
+          val evalModel = new Model(spark.sc, spark.ss, train, a, 0)
+          evalModel.trainModel()
+          val eval = new Evaluator(spark.sc, spark.ss, test, evalModel)
+          eval.evaluateModel()
+        }
+    }
   }
 }

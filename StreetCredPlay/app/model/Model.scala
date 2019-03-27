@@ -12,7 +12,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import scala.collection.mutable.ListBuffer
 
-class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f: Int) {
+class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f: Int, val g: Int) {
   var cv: CrossValidatorModel = _
   /*This is a pipeline that takes in a dataframe of the features,
   calculate tf-idf of the tweets and then vectorizes the features with tfidf
@@ -29,6 +29,7 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
       .setInputCol(tokenizer.getOutputCol)
       .setOutputCol("filtered")
 
+    /*
     //calculates term frequency of the words
     val tf = new HashingTF()
       .setInputCol(remover.getOutputCol)
@@ -37,6 +38,9 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
 
     //calculated the tf-idf of the words - final feature
     val idf = IDF.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model/tfidf")
+    */
+
+    val count = CountVectorizerModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/count")
 
     //indexes the credibility labels to 0 or 1. 1 if verified, 0 otherwise.
     val labelIndexer = new StringIndexer()
@@ -47,11 +51,11 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
     f match {
       case 0 =>
         vectorAssembler = new VectorAssembler()
-          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", count.getOutputCol))
           .setOutputCol("features")
       case 1 =>
         vectorAssembler = new VectorAssembler()
-          .setInputCols(Array("character_count", "word_count", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
+          .setInputCols(Array("character_count", "word_count", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", count.getOutputCol))
           .setOutputCol("features")
       case 2 =>
         vectorAssembler = new VectorAssembler()
@@ -59,15 +63,15 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
           .setOutputCol("features")
       case 3 =>
         vectorAssembler = new VectorAssembler()
-          .setInputCols(Array("contains_url", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "description_length", idf.getOutputCol))
+          .setInputCols(Array("contains_url", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "description_length", count.getOutputCol))
           .setOutputCol("features")
       case 4 =>
         vectorAssembler = new VectorAssembler()
-          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", idf.getOutputCol))
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", count.getOutputCol))
           .setOutputCol("features")
       case 5 =>
         vectorAssembler = new VectorAssembler()
-          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "contains_media", idf.getOutputCol))
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "contains_media", count.getOutputCol))
           .setOutputCol("features")
       case 6 =>
         vectorAssembler = new VectorAssembler()
@@ -75,8 +79,16 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
           .setOutputCol("features")
       case 7 =>
         vectorAssembler = new VectorAssembler()
-        .setInputCols(Array("contains_url", idf.getOutputCol))
+        .setInputCols(Array("contains_url", count.getOutputCol))
         .setOutputCol("features")
+      case 8 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("average_word_length", "contains_url", "hashtag_count", "favourite_retweet_ratio", "following_followers_ratio", "statuses_count", "user_has_url", "user_verified", "changed_user_profile", "contains_media", "description_length", count.getOutputCol))
+          .setOutputCol("features")
+      case 9 =>
+        vectorAssembler = new VectorAssembler()
+          .setInputCols(Array("character_count", "word_count", "contains_url", "hashtag_count", "retweet_count", "favorite_count", "followers_count", "friends_count", "statuses_count", "user_has_url", "user_verified", "changed_profile", "changed_picture", "contains_media", "description_length", "average_word_length", "favourite_retweet_ratio", "following_followers_ratio", "changed_user_profile" , count.getOutputCol))
+          .setOutputCol("features")
     }
 
     val lr = new LogisticRegression()
@@ -99,8 +111,16 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
 
     //creates a pipeline of the model
     val pipeline = new Pipeline()
-      .setStages(Array(tokenizer, remover, tf, idf, labelIndexer, vectorAssembler, dc))
-
+    g match {
+      case 0 =>
+        pipeline.setStages(Array(tokenizer, remover, count, labelIndexer, vectorAssembler, dc))
+      case 1 =>
+        pipeline.setStages(Array(tokenizer, remover, count, labelIndexer, vectorAssembler, lr))
+      case 2 =>
+        pipeline.setStages(Array(tokenizer, remover, count, labelIndexer, vectorAssembler, lsvc))
+      case 3 =>
+        pipeline.setStages(Array(tokenizer, remover, count, labelIndexer, vectorAssembler, nb))
+    }
     val paramGrid = new ParamGridBuilder()
       .build()
 

@@ -54,7 +54,7 @@ class Evaluator(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, v
     val fp = falsePositive(predictions)
     val fn = falseNegative(predictions)
     val tn = trueNegative(predictions)
-    showWrong(predictions)
+    predictions.show(10)
     println("True Positive: " + tp + "     False Positive: " + fp)
     println("False Negative: " + fn + "    True Negative: " + tn)
 

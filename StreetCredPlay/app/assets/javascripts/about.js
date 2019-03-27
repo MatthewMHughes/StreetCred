@@ -40,9 +40,11 @@ function openWebSocketConnection() {
     ws.onmessage = function (event) {
         var message;
         message = JSON.parse(event.data);
+        var trendsList = document.getElementById("trends");
         switch (message.messageType) {
             // when webpage is loaded we want to collect trends
             case "init":
+                trendsList.innerHTML = "";
                 console.log("connection accepted: get Trends");
                 ws.send(JSON.stringify({
                     messageType: "getTrends",
@@ -53,7 +55,6 @@ function openWebSocketConnection() {
             case "displayTrend":
                 console.log("received trend: " + message.trend);
                 console.log("volume of tweets: " + message.volume);
-                var trendsList = document.getElementById("trends");
                 var a = document.createElement('a');
                 var linkText = document.createTextNode(message.trend);
                 a.appendChild(linkText);
@@ -78,7 +79,7 @@ function openWebSocketConnection() {
         }
     };
     ws.onclose = function (event) {
-        // do nothing
+        initialize()
     }
 }
 

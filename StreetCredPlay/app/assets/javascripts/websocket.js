@@ -29,13 +29,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // user clicks search button, execute search button pressed function
     document.getElementById('searchButton')
         .addEventListener('click', searchButtonPressed);
+    document.getElementById('retrainModel')
+        .addEventListener('click', retrainButtonPressed);
     var top = document.getElementById('topButton')
         .addEventListener('click', openTopPage);
     var newt = document.getElementById('newButton')
         .addEventListener('click', openNewPage);
     // user clicks retrain button, model is retrained - just for experimenting with classifier
-    document.getElementById('retrainModel')
-        .addEventListener('click', retrainButtonPressed);
 });
 
 function initialize() {
@@ -56,13 +56,11 @@ function initialize() {
 
     // Update tab title
     var title = document.getElementById("title");
-    var titleText = document.createTextNode(query);
-    title.appendChild(titleText);
+    title.innerHTML = query;
 
     // Display the search query
     var queryText = document.getElementById("queryText");
-    var text = document.createTextNode(query);
-    queryText.appendChild(text);
+    queryText.innerHTML = query;
 
     // open web socket connection to the search actor
     openWebSocketConnection(query, setting);
@@ -100,9 +98,11 @@ function openWebSocketConnection(query, setting) {
     ws.onmessage = function (event) {
         var message;
         message = JSON.parse(event.data);
+        var trendsList = document.getElementById("trends");
         switch (message.messageType) {
             // Once handshake connection is confirmed, search for tweet for user's query
             case "init":
+                trendsList.innerHTML="";
                 console.log("connection accepted: get Trends");
                 ws.send(JSON.stringify({
                     messageType: "getTrends",
@@ -314,15 +314,16 @@ function openWebSocketConnection(query, setting) {
         }
     };
     ws.onclose = function (event) {
+        initialize()
     }
 }
 
 function searchButtonPressed() {
     var searchText = document.getElementById("searchText").value;
-    ws.send(JSON.stringify({
+    /*ws.send(JSON.stringify({
         messageType: "addSearch",
         query: searchText
-    }));
+    }));*/
     if(searchText !== ""){
         var newStr = "";
         if(searchText.substring(0,1) === "#"){

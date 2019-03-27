@@ -54,6 +54,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
     var idList = new ListBuffer[String]()
     var tweetList = new ListBuffer[String]()
     // To create a list of raw json for the tweets - can be easily converted to a dataframe
+    // If this is the first page
     if (nextPage == null){
       val querySet = searchTweets(query, setting)
       val tweets = querySet.getTweets
@@ -66,6 +67,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
         }
       }
     }
+      // Else search for the next page
     else{
       val querySet = twitter.search(nextPage)
       if(!querySet.hasNext){
@@ -75,6 +77,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
       nextPage = querySet.nextQuery()
       val tweets = querySet.getTweets
       for(tweet <- tweets){
+        // Filter out retweets - too many duplicate tweets displayed
         if(!tweet.isRetweet){
           idList+= String.valueOf(tweet.getId)
           val json = TwitterObjectFactory.getRawJSON(tweet)
@@ -133,6 +136,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
     hashtags
   }
 
+  // gets the locations from the database and sends it to the front end
   def getLocations(): Map[String, String]={
     val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Locations"))
     val df = MongoSpark.load(ss, readConfig)
@@ -146,6 +150,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
     map
   }
 
+  // adds a search to the database
   def addSearch(query: String): Unit = {
     val writeConfig = WriteConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Searches"))
     var map = new scala.collection.immutable.HashMap[String, String]
@@ -156,5 +161,26 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
     map += ("recent" -> LocalDateTime.now().toString)
     val rdd = sc.parallelize(Seq(new Document(map)))
     MongoSpark.save(rdd, writeConfig)
+  }
+
+  // Get the 10 top or recent searches from the database
+  def getSearches(setting: String): Map[String, Double] = {
+    val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Searches"))
+    var df = MongoSpark.load(ss, readConfig)
+    if(setting == "top"){
+      df = df.sort($"searches".desc)
+    }
+    else{
+      df = df.sort($"recent".desc)
+    }
+    df = df.withColumn("percentage", $"credible" / ($"credible" + $"uncredible")*100)
+    val queries = df.select("query").rdd.map(r => r(0).asInstanceOf[String]).collect()
+    val percentages = df.select("percentage").rdd.map(r => r(0).asInstanceOf[Double]).collect()
+    var map = new scala.collection.immutable.HashMap[String, Double]
+    var i = 0
+    for (i <- 0 until 10){
+      map+=(i + " " + queries(i) -> percentages(i).toInt)
+    }
+    map
   }
 }

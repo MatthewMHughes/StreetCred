@@ -57,5 +57,16 @@ class TopActor(out: ActorRef, system: ActorSystem, mat: Materializer, crawler: C
           out ! message
         }
       }
+      else if(socketMessage == JsString("getSearches")){
+        val searches = crawler.getSearches("top")
+        for((k, v) <- searches){
+          val message: JsValue = JsObject(Seq(
+            "messageType" -> JsString("displaySearch"),
+            "query" -> JsString(k),
+            "percentage" -> JsNumber(v)
+          ))
+          out ! message
+        }
+      }
   }
 }

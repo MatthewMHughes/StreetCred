@@ -38,6 +38,18 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
     inputDf.withColumn("word_count", size(split($"full_text", " ")))
   }
 
+  def averageWordLength(inputDf: DataFrame): DataFrame = {
+    inputDf.withColumn("average_word_length", $"character_count"/$"word_count")
+  }
+
+  def favouriteRetweetRatio(inputDf: DataFrame): DataFrame = {
+    inputDf.withColumn("favourite_retweet_ratio", $"retweet_count".cast("float")/$"favorite_count".cast("float"))
+  }
+
+  def followingFollowersRatio(inputDf: DataFrame): DataFrame = {
+    inputDf.withColumn("following_followers_ratio", $"user.followers_count".cast("float")/$"user.friends_count".cast("float"))
+  }
+
   //returns 1.0 if the tweet contains a url, 0.0 otherwise
   def tweetContainsURL(inputDf: DataFrame): DataFrame = {
     inputDf.withColumn("contains_url", (size($"entities.urls")!==0).cast("float"))
@@ -73,6 +85,10 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
     inputDf.withColumn("changed_picture", ($"user.default_profile_image" === false).cast("float"))
   }
 
+  def changedUserProfile(inputDf: DataFrame): DataFrame ={
+    inputDf.withColumn("changed_user_profile", ($"user.default_profile" === false && $"user.default_profile_image" === false).cast("float"))
+  }
+
   //returns 1.0 if the tweet has any media - an image, video etc, 0.0 otherwise
   def tweetContainsMedia(inputDf: DataFrame): DataFrame ={
     val columns = inputDf.columns
@@ -102,7 +118,11 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
     df = changedPicture(df)// 14
     df = tweetContainsMedia(df)// 15
     df = descriptionLength(df)// 16
-    val featureDf = df.select(
+    df = averageWordLength(df)// new1
+    df = favouriteRetweetRatio(df)// new2
+    df = followingFollowersRatio(df)// new3
+    df = changedUserProfile(df)// new4
+    var featureDf = df.select(
       $"character_count",// 1
       $"word_count",// 2
       $"contains_url",// 3
@@ -119,8 +139,15 @@ class FeatureExtractor(val sc: SparkContext, val ss: SparkSession, var df: DataF
       $"changed_picture",// 14
       $"contains_media",// 15
       $"description_length",// 16
+      $"average_word_length",// new1
+      $"favourite_retweet_ratio",// new2
+      $"following_followers_ratio",// new3
+      $"changed_user_profile",// new4
       $"labelS",
       $"full_text")
+    featureDf = featureDf.na.fill(0.0, Seq("favourite_retweet_ratio"))
+    featureDf = featureDf.na.fill(0.0, Seq("average_word_length"))
+    featureDf = featureDf.na.fill(0.0, Seq("following_followers_ratio"))
     featureDf
   }
 }

@@ -1,1 +1,1 @@
-{"class":"org.apache.spark.ml.tuning.CrossValidatorModel","timestamp":1550506522663,"sparkVersion":"2.3.2","uid":"cv_13b5d0977638","paramMap":{"numFolds":5,"seed":-1191137437,"estimatorParamMaps":[[]]},"avgMetrics":[0.6421614787143077],"persistSubModels":false}
+{"class":"org.apache.spark.ml.tuning.CrossValidatorModel","timestamp":1553450637829,"sparkVersion":"2.3.2","uid":"cv_c53d3d277cde","paramMap":{"seed":-1191137437,"numFolds":5,"estimatorParamMaps":[[]]},"avgMetrics":[0.6031930995045005],"persistSubModels":false}
