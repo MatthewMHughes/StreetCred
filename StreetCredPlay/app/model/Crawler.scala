@@ -138,7 +138,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
 
   // gets the locations from the database and sends it to the front end
   def getLocations(): Map[String, String]={
-    val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Locations"))
+    val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/27017", "database" -> "StreetCred", "collection" -> "Locations"))
     val df = MongoSpark.load(ss, readConfig)
     val name = df.select("name").rdd.map(r => r(0).asInstanceOf[String]).collect()
     val id = df.select("id").rdd.map(r => r(0).asInstanceOf[String]).collect()
@@ -152,7 +152,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
 
   // adds a search to the database
   def addSearch(query: String): Unit = {
-    val writeConfig = WriteConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Searches"))
+    val writeConfig = WriteConfig(Map("uri" -> "mongodb://127.0.0.1/27017", "database" -> "StreetCred", "collection" -> "Searches"))
     var map = new scala.collection.immutable.HashMap[String, String]
     map += ("query" -> query)
     map += ("searches" -> "1")
@@ -165,7 +165,7 @@ class Crawler(ss: SparkSession, sc: SparkContext) {
 
   // Get the 10 top or recent searches from the database
   def getSearches(setting: String): Map[String, Double] = {
-    val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "StreetCred", "collection" -> "Searches"))
+    val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/27017", "database" -> "StreetCred", "collection" -> "Searches"))
     var df = MongoSpark.load(ss, readConfig)
     if(setting == "top"){
       df = df.sort($"searches".desc)
