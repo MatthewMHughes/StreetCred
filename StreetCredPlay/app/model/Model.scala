@@ -37,10 +37,10 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
       .setOutputCol("rawFeatures")
 
     //calculated the tf-idf of the words - final feature
-    val idf = IDF.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model/tfidf")
+    val idf = IDF.load("/~/StreetCred/StreetCredPlay/app/model/the-model/tfidf")
     */
 
-    val count = CountVectorizerModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/count")
+    val count = CountVectorizerModel.load("/root/StreetCred/StreetCredPlay/app/model/count")
 
     //indexes the credibility labels to 0 or 1. 1 if verified, 0 otherwise.
     val labelIndexer = new StringIndexer()
@@ -136,13 +136,13 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
   /* This will create the classification model and save it over the existing model */
   def trainModel(): CrossValidatorModel = {
     cv = pipeline().fit(df)
-    cv.write.overwrite().save("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
+    cv.write.overwrite().save("/root/StreetCred/StreetCredPlay/app/model/the-model")
     cv
   }
 
   /* This will set the model to the saved model */
   def setModel(): CrossValidatorModel = {
-    cv = CrossValidatorModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model")
+    cv = CrossValidatorModel.load("/root/StreetCred/StreetCredPlay/app/model/the-model")
     cv
   }
 
@@ -154,7 +154,7 @@ class Model(val sc: SparkContext, val ss: SparkSession, val df: DataFrame, val f
 
   /* This will return explanation for each tweet to why its been given a specific label */
   def getExplanation(predDf: DataFrame): List[String] = {
-    val bm = PipelineModel.load("/home/matthew/Documents/StreetCred/StreetCredPlay/app/model/the-model/bestModel")
+    val bm = PipelineModel.load("/root/StreetCred/StreetCredPlay/app/model/the-model/bestModel")
     val pred = cv.transform(predDf)
     val vectors = pred.select("features").rdd.map(r => r(0).asInstanceOf[SparseVector]).collect()
     val dec = new Decision(sc, ss, bm)
