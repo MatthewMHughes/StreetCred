@@ -152,6 +152,11 @@ function openWebSocketConnection(query, setting) {
                 row.appendChild(text);
                 var text2 = document.createElement("div");
                 text2.setAttribute("class", "col-md-4");
+                var loadCred = document.createTextNode("Loading Credibility ...");
+                var headCred = document.createElement("h1");
+                headCred.setAttribute("id", "id-"+String(message.id)+"-cred");
+                headCred.appendChild(loadCred);
+                text2.appendChild(headCred);
                 row.appendChild(text2);
                 // This creates each tweet taking in the tweets id
                 twttr.widgets.createTweet(
@@ -164,17 +169,13 @@ function openWebSocketConnection(query, setting) {
                     // when the tweet is loaded, remove loading message and add credibility loading message
                     var load = document.getElementById("loadingMsg");
                     if (load != null){load.innerHTML = "";}
-                    var loadCred = document.createTextNode("Loading Credibility ...");
-                    var headCred = document.createElement("h1");
-                    headCred.setAttribute("id", "id-"+String(message.id)+"-cred");
-                    headCred.appendChild(loadCred);
-                    text2.appendChild(headCred);
                     document.getElementById('tweet').innerHTML+=message.status;
                 });
                 break;
             case "displayCred":
                 var id = "id-"+String(message.id)+"-cred";
                 div = document.getElementById(id);
+                console.log(id, div)
                 // remove loading message
                 div.innerHTML = "";
                 // if status is 0 then the tweet is uncredible, opposite for credible
