@@ -6,7 +6,7 @@ lazy val `streetcredplay` = (project in file(".")).enablePlugins(PlayScala)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
       
-resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
+resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
 
 resolvers += Resolver.sonatypeRepo("releases")
       
